@@ -16,7 +16,7 @@ const handler = async (m, { conn, text, command, usedPrefix}) => {
     if (isSpotifyUrl) {
       trackUrl = text
 } else {
-      const searchRes = await fetch(`https://api.sylphy.xyz/search/spotify?q=${encodeURIComponent(text)}&apikey=${apikey}`)
+      const searchRes = await fetch(`https://api.sylphy.xyz/search/spotify?q=${encodeURIComponent(text)}&apikey=sylphy-8238wss`)
       const searchJson = await searchRes.json()
 
       if (!searchJson.status ||!Array.isArray(searchJson.data) || searchJson.data.length === 0) {
@@ -26,7 +26,7 @@ const handler = async (m, { conn, text, command, usedPrefix}) => {
       trackUrl = searchJson.data[0].url
 }
 
-    const downloadRes = await fetch(`https://api.sylphy.xyz/download/spotify?url=${encodeURIComponent(trackUrl)}&apikey=${apikey}`)
+    const downloadRes = await fetch(`https://api.sylphy.xyz/download/spotify?url=${encodeURIComponent(trackUrl)}&apikey=sylphy-8238wss`)
     const downloadJson = await downloadRes.json()
 
     if (!downloadJson.status ||!downloadJson.data ||!downloadJson.data.dl_url) {
