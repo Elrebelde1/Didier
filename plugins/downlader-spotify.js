@@ -42,7 +42,7 @@ let handler = async (m, { conn, args, command, text}) => {
 }
 }
 
-handler.help = ['spotify]
+handler.help = ['spotify']
 handler.tags = ['music']
 handler.command = /^spotify$/i
 
