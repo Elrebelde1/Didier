@@ -1,12 +1,11 @@
 
 const ytSearchHandler = async (m, { conn, text, usedPrefix, command}) => {
-  const apikey = "sylphy-8238wss";
+  const apikey = "sylphy-8238wss"; // Reemplaza esto con tu clave válida
 
-  // Validar entrada
   if (!text ||!text.trim()) {
     await conn.reply(
       m.chat,
-      `📌 *Uso correcto:*\n${usedPrefix + command} <término de búsqueda>\n📍 *Ejemplo:* ${usedPrefix + command} Nio Garcia Infinitamente remix`,
+      `📌 *Uso correcto:*\n${usedPrefix + command} <término de búsqueda>\n📍 *Ejemplo:* ${usedPrefix + command} Bad Bunny Un Preview`,
       m
 );
     return;
@@ -28,7 +27,6 @@ const ytSearchHandler = async (m, { conn, text, usedPrefix, command}) => {
     for (const video of videos) {
       const caption = `
 ╭─🎶 *Sasuke Bot - Audio YouTube* 🎶─╮
-│
 │ 🎵 *Título:* ${video.title}
 │ 👤 *Autor:* ${video.author}
 │ ⏱️ *Duración:* ${video.duration}
@@ -40,8 +38,6 @@ const ytSearchHandler = async (m, { conn, text, usedPrefix, command}) => {
 │.ytmp3+ ${video.url}  ➤ Audio
 │.ytmp4+ ${video.url}  ➤ Video
 ╰──────────────────────────────────╯
-
-> © Código Oficial de Barboza MD™
 `;
 
       await conn.sendMessage(
