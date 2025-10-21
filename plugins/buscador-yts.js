@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 let handler = async (m, { conn, text, usedPrefix, command}) => {
 if (!text) return m.reply("Ingresa un texto a buscar")
 
-const url = `https://api.sylphy.xyz/search/youtube?q=${encodeURIComponent(query)}&apikey=${apikey}`;
+const url = `https://api.sylphy.xyz/search/youtube?q=${encodeURIComponent(query)}&apikey=sylphy-8238wss`;
 const res = await fetch(url);
 
 if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
