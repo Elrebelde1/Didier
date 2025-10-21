@@ -1,44 +1,30 @@
 
+import fetch from "node-fetch";
+
 let handler = async (m, { conn, text, usedPrefix, command}) => {
-  const apikey = "sylphy-8238wss"; // ← Tu clave actual
+if (!text) return m.reply("Ingresa un texto a buscar")
 
-  // Validar entrada
-  if (!text ||!text.trim()) {
-    await conn.reply(
-      m.chat,
-      `📌 *Uso correcto:*\n${usedPrefix + command} <término de búsqueda>\n📍 *Ejemplo:* ${usedPrefix + command} Nio Garcia Infinitamente remix`,
-      m
-);
-    return;
+const url = `https://api.sylphy.xyz/search/youtube?q=${encodeURIComponent(query)}&apikey=${apikey}`;
+const res = await fetch(url);
+
+if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
+
+const json = await res.json();
+
+if (!json.status || !json.res || json.res.length === 0) {
+    return m.reply("No se encontraron resultados.");
 }
 
-  const query = text.trim();
-  await conn.reply(m.chat, `🔎 Buscando en YouTube por: *${query}*`, m);
+const videos = json.res.slice(0, 5);
 
-  try {
-    const url = `https://api.sylphy.xyz/search/youtube?q=${encodeURIComponent(query)}&apike=sylphy-8238wss`;
-    const res = await fetch(url);
-
-    if (!res.ok) {
-      throw new Error(`Error ${res.status}: ${res.statusText}`);
-}
-
-    const json = await res.json();
-
-    if (!json.status ||!json.res || json.res.length === 0) {
-      return m.reply("❌ No se encontraron resultados.");
-}
-
-    const videos = json.res.slice(0, 5); // Primeros 5 resultados
-
-    for (const video of videos) {
-      const caption = `
+for (const video of videos) {
+    const caption = `
 ╭─🎶 *Sasuke Bot - Audio YouTube* 🎶─╮
 │ 🎵 *Título:* ${video.title}
 │ 👤 *Autor:* ${video.author}
 │ ⏱️ *Duración:* ${video.duration}
 │ 👁️ *Vistas:* ${video.views.toLocaleString()}
-│ 📅 *Publicado:* ${video.published}
+│ 📅 *Publicado:* ${video.published || 'Desconocido'}
 │ 🔗 *Enlace:* ${video.url}
 │
 │ 🎧 *Para descargar:*
@@ -49,20 +35,16 @@ let handler = async (m, { conn, text, usedPrefix, command}) => {
 > © Código Oficial de Barboza MD™
 `;
 
-      await conn.sendMessage(
+    await conn.sendMessage(
         m.chat,
-        { image: { url: video.thumbnail}, caption},
-        { quoted: m}
-);
-}
-} catch (error) {
-    console.error("❌ Error:", error);
-    await conn.reply(m.chat, `🚨 *Error:* ${error.message || "Error desconocido"}`, m);
+        { image: { url: video.thumbnail }, caption },
+        { quoted: m }
+    );
 }
 };
 
 handler.help = ["ytsearch", "yts <texto>"];
 handler.tags = ["búsquedas"];
-handler.command = /^(ytsearch|yts)$/i;
+handler.command = ["ytsearch", "yts"]
 
 export default handler;
