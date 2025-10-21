@@ -1,5 +1,5 @@
 
-const ytSearchHandler = async (m, { conn, text, usedPrefix, command}) => {
+let handler = async (m, { conn, text, usedPrefix, command}) => {
   const apikey = "sylphy-8238wss"; // ← Tu clave actual
 
   // Validar entrada
@@ -16,7 +16,7 @@ const ytSearchHandler = async (m, { conn, text, usedPrefix, command}) => {
   await conn.reply(m.chat, `🔎 Buscando en YouTube por: *${query}*`, m);
 
   try {
-    const url = `https://api.sylphy.xyz/search/youtube?q=${encodeURIComponent(query)}&apike=sylphy-8238wss`;
+    const url = `https://api.sylphy.xyz/search/youtube?q=${encodeURIComponent(query)}&apike=${apikey}`;
     const res = await fetch(url);
 
     if (!res.ok) {
@@ -61,8 +61,8 @@ const ytSearchHandler = async (m, { conn, text, usedPrefix, command}) => {
 }
 };
 
-ytSearchHandler.help = ["ytsearch", "yts <texto>"];
-ytSearchHandler.tags = ["búsquedas"];
-ytSearchHandler.command = /^(ytsearch|yts)$/i;
+handler.help = ["ytsearch", "yts <texto>"];
+handler.tags = ["búsquedas"];
+handler.command = /^(ytsearch|yts)$/i;
 
-export default ytSearchHandler;
+export default handler;
