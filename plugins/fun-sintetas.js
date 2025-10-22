@@ -4,7 +4,7 @@ var handler = async (m, { conn, args, usedPrefix, command}) => {
   const emoji2 = '⚠️';
 
   if (!args[0]) {
-    return conn.reply(m.chat, `${emoji2} Debes proporcionar un nombre de usuario de Roblox.\n\nEjemplo:\n*${usedPrefix}${command} Barboza_147*`, m, rcanal);
+    return conn.reply(m.chat, `${emoji2} Debes proporcionar un nombre de usuario de Roblox.\n\nEjemplo:\n*${usedPrefix}${command} Barboza_147*`, m,);
 }
 
   const username = args[0].trim();
