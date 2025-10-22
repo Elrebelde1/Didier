@@ -11,24 +11,29 @@ let handler = async (m, { text, usedPrefix, command}) => {
   await m.react("🎵");
 
   try {
-    const url = `https://api.sylphy.xyz/tools/lyrics?q=${encodeURIComponent(text.trim())}&apikey=sylphy-8238wss`;
+    const url = `https://api.sylphy.xyz/tools/lyrics?q=${encodeURIComponent(text.trim())}&apikey=${apikey}`;
     const res = await fetch(url);
     const json = await res.json();
 
-    if (!json.status ||!json.lyrics) {
+    // Verifica si hay letra disponible
+    const lyrics = json?.info?.lyrics;
+    if (!json.status ||!lyrics) {
       return m.reply("❌ No se encontró la letra de esa canción.");
 }
 
-    const { title, artist, album, preview, lyrics} = json.info;
+    const title = json?.info?.title || text.trim();
+    const artist = json?.info?.artist || "Desconocido";
+    const album = json?.info?.album?.title || "Desconocido";
+    const preview = json?.info?.preview || "";
 
     const caption = `
 🎶 *${title}* — *${artist}*
-💿 Álbum: ${album?.title || "Desconocido"}
+💿 Álbum: ${album}
 
 📝 *Letra:*
 ${lyrics.slice(0, 1000)}...
 
-🔊 [Escuchar preview](${preview})
+${preview? `🔊 [Escuchar preview](${preview})`: ""}
 `;
 
     await m.reply(caption);
