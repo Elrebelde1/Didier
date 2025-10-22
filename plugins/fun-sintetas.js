@@ -1,24 +1,45 @@
 
-let handler = async (m, { conn, args }) => {
-    // Verificar si se menciona a un usuario
-    if (!args[0]) {
-        return conn.sendMessage(m.chat, { text: "⚠️ Debes mencionar a un usuario. Usa el formato: .sintetas @usuario" }, { quoted: m });
-    }
+var handler = async (m, { conn, args, usedPrefix, command}) => {
+  const emoji = '🎮';
+  const emoji2 = '⚠️';
 
-    // Obtener el ID del usuario mencionado
-    let userMentioned = m.mentionedJid[0];
-    
-    // Generar un porcentaje aleatorio entre 1 y 100
-    let porcentaje = Math.floor(Math.random() * 100) + 1;
-
-    // Mensaje que se enviará
-    const mensaje = `_*@${userMentioned.split('@')[0]}* *ES/IS* *${porcentaje}%* *SINTETAS,* *NO TIENE NI TETAS Y SE CREE TETONA? 😂 *_`;
-
-    // Enviar el mensaje al chat
-    await conn.sendMessage(m.chat, { text: mensaje.replace('@', '') }, { quoted: m });
+  if (!args[0]) {
+    return conn.reply(m.chat, `${emoji2} Debes proporcionar un nombre de usuario de Roblox.\n\nEjemplo:\n*${usedPrefix}${command} idisnxbxb*`, m);
 }
-handler.help = ['sintetas @usuario'];
-handler.tags = ['diversión'];
-handler.command = ['sintetas'];
+
+  const username = args[0].trim();
+  const apiUrl = `https://api.dorratz.com/v3/roblox?username=${encodeURIComponent(username)}`;
+
+  try {
+    const res = await fetch(apiUrl);
+    const json = await res.json();
+
+    if (json.status!== 'success') {
+      return conn.reply(m.chat, `${emoji2} No se pudo obtener información del usuario *${username}*. Verifica que el nombre sea correcto.`, m);
+}
+
+    const { account, stats} = json.data;
+
+    let info = `${emoji} *Información de Roblox:*\n`;
+    info += `👤 Usuario: *${account.username}*\n`;
+    info += `📝 Nombre para mostrar: ${account.displayName}\n`;
+    info += `📅 Creado: ${account.created}\n`;
+    info += `📄 Descripción: ${account.description || 'Sin descripción'}\n`;
+    info += `👥 Amigos: ${stats.friendCount}\n`;
+    info += `👣 Seguidores: ${stats.followers}\n`;
+    info += `➡️ Siguiendo: ${stats.following}\n`;
+    info += `🖼️ Imagen: ${account.profilePicture}`;
+
+    return conn.reply(m.chat, info, m);
+} catch (e) {
+    console.error(e);
+    return conn.reply(m.chat, `${emoji2} Ocurrió un error al consultar la API. Intenta nuevamente más tarde.`, m);
+}
+};
+
+handler.help = ['robloxinfo <usuario>'];
+handler.tags = ['utilidad'];
+handler.command = ['robloxinfo', 'roblox'];
+handler.group = false;
 
 export default handler;
