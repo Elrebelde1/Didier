@@ -46,9 +46,9 @@ var handler = async (m, { conn, participants, isAdmin, isBotAdmin, args, usedPre
 }
 };
 
-handler.help = ['kickall confirmar'];
+handler.help = ['kick2 confirmar'];
 handler.tags = ['grupo'];
-handler.command = ['kickall', 'eliminaratodos', 'sacaratodos'];
+handler.command = ['kick2', 'eliminaratodos', 'sacaratodos'];
 handler.group = true;
 
 export default handler;
