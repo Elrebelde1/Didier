@@ -13,28 +13,42 @@ let handler = async (m, { conn, text, usedPrefix, command}) => {
     const res = await fetch(apiUrl);
     const json = await res.json();
 
-    const raw = JSON.parse(json.objects[0].content);
+    if (!json.objects ||!json.objects.length ||!json.objects[0].content) {
+      throw new Error("No se encontraron resultados válidos.");
+}
+
+    let raw;
+    try {
+      raw = JSON.parse(json.objects[0].content);
+} catch (e) {
+      throw new Error("No se pudo analizar la información de la app.");
+}
+
     const {
-      name,
-      size,
-      package,
-      lastUpdate,
+      name = "Desconocido",
+      size = "N/A",
+      package: pkg = "N/A",
+      lastUpdate = "N/A",
       icon,
-      dllink
+      dllink = "No disponible"
 } = raw;
 
     const caption = `
 📱 *Nombre:* ${name}
-📦 *Paquete:* ${package}
+📦 *Paquete:* ${pkg}
 🗓️ *Última actualización:* ${lastUpdate}
 📁 *Tamaño:* ${size}
 🔗 *Descarga:* ${dllink}
 `;
 
-    const iconRes = await fetch(icon);
-    const iconBuffer = await iconRes.buffer();
+    if (icon) {
+      const iconRes = await fetch(icon);
+      const iconBuffer = await iconRes.buffer();
+      await conn.sendFile(m.chat, iconBuffer, "icon.png", caption, m);
+} else {
+      await m.reply(caption);
+}
 
-    await conn.sendFile(m.chat, iconBuffer, "icon.png", caption, m);
     await m.react("✅");
 } catch (error) {
     console.error("❌ Error:", error);
@@ -42,8 +56,8 @@ let handler = async (m, { conn, text, usedPrefix, command}) => {
 }
 };
 
-handler.help = ["apk3 <nombre de la app>"];
+handler.help = ["apk <nombre de la app>"];
 handler.tags = ["descargas"];
-handler.command = ["apk3"];
+handler.command = ["apk"];
 
 export default handler;
