@@ -9,7 +9,8 @@ let handler = async (m, { text, command}) => {
 }
 
   try {
-    const url = `https://api.sylphy.xyz/ai/chatgpt?text=${encodeURIComponent(text.trim())}&apikey=sylphy-8238wss`;
+    const prompt = `Responde en español: ${text.trim()}`;
+    const url = `https://api.sylphy.xyz/ai/chatgpt?text=${encodeURIComponent(prompt)}&apikey=sylphy-8238wss`;
     const res = await fetch(url);
     const json = await res.json();
 
@@ -17,7 +18,7 @@ let handler = async (m, { text, command}) => {
       return m.reply("❌ No se pudo obtener respuesta de la IA.");
 }
 
-    await m.reply(`🤖 *Respuesta IA:*\n\n${json.result}`);
+    await m.reply(`🤖 *Respuesta IA (en español):*\n\n${json.result}`);
 } catch (e) {
     console.error("Error en.ai:", e);
     m.reply("⚠️ Error al procesar la solicitud de IA.");
