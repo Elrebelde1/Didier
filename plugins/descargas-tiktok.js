@@ -23,31 +23,38 @@ const handler = async (m, { conn, text, command}) => {
       return conn.reply(m.chat, errorMessage, m);
 }
 
-    // Usar el enlace sin marca de agua si está disponible
-    const videoUrlNoWatermark = result.data.play;
-
-    if (!videoUrlNoWatermark) {
-      return conn.reply(m.chat, '❌ No se encontró una URL de video sin marca de agua.', m);
-}
-
     const author = result.data.author?.nickname || 'Desconocido';
     const description = result.data.title || 'Sin descripción';
     const duration = result.data.duration? formatDuration(result.data.duration): 'N/A';
-    const size = result.data.size? `${(result.data.size / (1024 * 1024)).toFixed(2)} MB`: 'N/A';
+    const sizeNormal = result.data.size? `${(result.data.size / (1024 * 1024)).toFixed(2)} MB`: 'N/A';
+    const sizeHD = result.data.size_hd? `${(result.data.size_hd / (1024 * 1024)).toFixed(2)} MB`: 'N/A';
 
     const caption = `
-✅ *TikTok descargado sin marca de agua:*
+🎬 *Vista previa del TikTok:*
 
 👤 *Autor:* ${author}
 📝 *Descripción:* ${description}
 ⏳ *Duración:* ${duration}
-📏 *Tamaño:* ${size}
+
+📥 ¿Cómo deseas descargarlo?
+1️⃣ Video Normal (${sizeNormal})
+2️⃣ Video HD (${sizeHD})
+
+*Responde con:* 1 o 2
 `;
 
     await conn.sendMessage(m.chat, {
-      video: { url: videoUrlNoWatermark},
-      caption: caption,
+      video: { url: result.data.play},
+      caption
 }, { quoted: m});
+
+    // Guardar elección pendiente
+    conn.tiktokChoice = conn.tiktokChoice || {};
+    conn.tiktokChoice[m.sender] = {
+      normal: result.data.play,
+      hd: result.data.play_hd,
+      title: description
+};
 
 } catch (error) {
     console.error('Error al descargar TikTok:', error);
@@ -55,12 +62,37 @@ const handler = async (m, { conn, text, command}) => {
 }
 };
 
+// Escucha la respuesta del usuario
+const responseHandler = async (m, { conn}) => {
+  const choice = conn.tiktokChoice?.[m.sender];
+  if (!choice) return;
+
+  const text = m.text.trim();
+  let videoUrl;
+
+  if (text === '1') {
+    videoUrl = choice.normal;
+} else if (text === '2') {
+    videoUrl = choice.hd;
+} else {
+    return m.reply('❌ Opción inválida. Responde con 1 para video normal o 2 para video HD.');
+}
+
+  await conn.sendMessage(m.chat, {
+    video: { url: videoUrl},
+    caption: `✅ *Aquí tienes tu video ${text === '1'? 'normal': 'HD'}:* ${choice.title}`
+}, { quoted: m});
+
+  delete conn.tiktokChoice[m.sender]; // Limpiar después de usar
+};
+
+handler.command = /^(tiktok|tt)$/i;
+handler.after = responseHandler;
+
 function formatDuration(seconds) {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   return `${minutes}:${remainingSeconds < 10? '0': ''}${remainingSeconds}`;
 }
-
-handler.command = /^(tiktok|tt)$/i;
 
 export default handler;
