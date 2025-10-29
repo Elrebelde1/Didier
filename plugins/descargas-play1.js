@@ -55,10 +55,11 @@ const handler = async (m, { conn, text, command}) => {
 
       if (!json.status ||!dl) return m.reply("❌ *No se pudo obtener el audio.*");
 
-      await conn.sendFile(m.chat, dl, `${title}.${format}`, "", m, null, {
-        mimetype: "audio/mpeg",
-        ptt: false
-});
+      await conn.sendMessage(m.chat, {
+        audio: { url: dl},
+        mimetype: format === "mp3"? "audio/mpeg": "audio/mp4",
+        fileName: `${title}.${format}`
+}, { quoted: m});
 
       await m.react("✅");
 }
@@ -74,10 +75,12 @@ const handler = async (m, { conn, text, command}) => {
       const sizeMB = parseInt(fileRes.headers.get("Content-Length") || 0) / (1024 * 1024);
       const sendAsDoc = sizeMB>= limit;
 
-      await conn.sendFile(m.chat, dl, `${title}.mp4`, "", m, null, {
-        asDocument: sendAsDoc,
-        mimetype: "video/mp4"
-});
+      await conn.sendMessage(m.chat, {
+        video: { url: dl},
+        mimetype: "video/mp4",
+        fileName: `${title}.mp4`,
+        caption: ""
+}, { quoted: m});
 
       await m.react("📽️");
 }
