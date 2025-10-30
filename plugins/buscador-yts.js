@@ -3,36 +3,34 @@ import fetch from "node-fetch";
 
 let handler = async (m, { conn, text, usedPrefix, command}) => {
   if (!text ||!text.trim()) {
-    return m.reply(`📌 *Uso correcto:*\n${usedPrefix + command} <término de búsqueda>\n📍 *Ejemplo:* ${usedPrefix + command} Nio Garcia Infinitamente remix`);
+    return m.reply(`📌 *Uso correcto:*\n${usedPrefix + command} <término de búsqueda>\n📍 *Ejemplo:* ${usedPrefix + command} Messi goles`);
 }
 
-  const query = text.trim(); // ← Aquí defines 'query' correctamente
-  const url = `https://api.sylphy.xyz/search/youtube?q=${encodeURIComponent(query)}&apikey=sylphy-8238wss`;
+  const query = text.trim();
+  const url = `https://api.starlights.uk/api/search/youtube?q=${encodeURIComponent(query)}`;
   const res = await fetch(url);
 
   if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
 
   const json = await res.json();
 
-  if (!json.status ||!json.res || json.res.length === 0) {
+  if (!json.status ||!json.result || json.result.length === 0) {
     return m.reply("❌ No se encontraron resultados.");
 }
 
-  const videos = json.res.slice(0, 5);
+  const videos = json.result.slice(0, 5);
 
   for (const video of videos) {
     const caption = `
 ╭─🎶 *Sasuke Bot - Audio YouTube* 🎶─╮
 │ 🎵 *Título:* ${video.title}
-│ 👤 *Autor:* ${video.author}
+│ 👤 *Autor:* ${video.channel}
 │ ⏱️ *Duración:* ${video.duration}
-│ 👁️ *Vistas:* ${video.views.toLocaleString()}
-│ 📅 *Publicado:* ${video.published || 'Desconocido'}
-│ 🔗 *Enlace:* ${video.url}
+│ 🔗 *Enlace:* ${video.link}
 │
 │ 🎧 *Para descargar:*
-│.ytmp3+ ${video.url}  ➤ Audio
-│.ytmp4+ ${video.url}  ➤ Video
+│.ytmp3+ ${video.link}  ➤ Audio
+│.ytmp4+ ${video.link}  ➤ Video
 ╰──────────────────────────────────╯
 
 > © Código Oficial de Barboza MD™
@@ -40,7 +38,7 @@ let handler = async (m, { conn, text, usedPrefix, command}) => {
 
     await conn.sendMessage(
       m.chat,
-      { image: { url: video.thumbnail}, caption},
+      { image: { url: video.imageUrl}, caption},
       { quoted: m}
 );
 }
