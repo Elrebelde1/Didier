@@ -2,17 +2,20 @@ import fetch from "node-fetch";
 
 const handler = async (m, { isOwner, isAdmin, conn, text, participants, args}) => {
   const chat = global.db.data.chats[m.chat] || {};
-  const emoji = chat.emojiTag || '🤖';
+  // 🎄 Usamos emojis de campanas o estrellas para la mención
+  const emoji = '🔔'; 
 
+  // Solo Santa y sus Elfos principales (admin/owner) pueden tocar la campana
   if (!(isAdmin || isOwner)) {
     global.dfail('admin', m, conn);
-    throw new Error('No tienes permisos para usar este comando.');
+    throw new Error('Solo los Elfos Jefes o Santa tienen permiso para usar este comando.');
 }
 
   const customMessage = args.join(' ');
   const groupMetadata = await conn.groupMetadata(m.chat);
   const groupName = groupMetadata.subject;
 
+  // Banderas de países (se mantienen para indicar ubicación, pero se añade un toque festivo)
   const countryFlags = {
     '1': '🇺🇸', '44': '🇬🇧', '33': '🇫🇷', '49': '🇩🇪', '39': '🇮🇹', '81': '🇯🇵',
     '82': '🇰🇷', '86': '🇨🇳', '7': '🇷🇺', '91': '🇮🇳', '61': '🇦🇺', '64': '🇳🇿',
@@ -35,37 +38,43 @@ const handler = async (m, { isOwner, isAdmin, conn, text, participants, args}) =
     return countryFlags[prefix] || '🏳️‍🌈';
 };
 
-  let messageText = `*${groupName}*\n\n*Integrantes: ${participants.length}*\n${customMessage}\n┌──⭓ *Despierten*\n`;
+  let messageText = `*❄️ LLAMADA URGENTE DEL POLO NORTE ❄️*\n\n*GRUPO: ${groupName}*\n*AYUDANTES PRESENTES: ${participants.length}*\n\n_Mensaje de Santa: ${customMessage || '¡Es hora de preparar los regalos!'}_
+┌──⭓ *¡A TRABAJAR, DUENDES!*
+`;
+
+  // Iteración navideña
   for (const mem of participants) {
     messageText += `${emoji} ${getCountryFlag(mem.id)} @${mem.id.split('@')[0]}\n`;
 }
-  messageText += `└───────⭓\n\n𝘚𝘶𝘱𝘦𝘳 𝘉𝘰𝘵 𝘞𝘩𝘢𝘵𝘴𝘈𝘱𝘱 🚩`;
+  messageText += `└───────⭓\n\n*🦌 Sasuke Bot MD - El Trineo de Santa 🎅*`;
 
-  const imageUrl = 'https://qu.ax/yxwAs.jpg';
+  // Puedes cambiar la imagen y el audio a algo navideño si lo tienes
+  const imageUrl = 'https://qu.ax/yxwAs.jpg'; 
   const audioUrl = 'https://cdn.russellxz.click/3fd9f7de.mp3';
 
+  // fkontak con temática de Santa Claus / Navidad
   const fkontak = {
     key: {
       participants: "0@s.whatsapp.net",
       remoteJid: "status@broadcast",
       fromMe: false,
-      id: "AlienMenu"
+      id: "Navidad"
 },
     message: {
       locationMessage: {
-        name: "*Sasuke Bot MD 🌀*",
+        name: "*Santa's Helper Bot 🎄*",
         jpegThumbnail: await (await fetch('https://cdn-sunflareteam.vercel.app/images/fa68a035ca.jpg')).buffer(),
         vcard:
           "BEGIN:VCARD\n" +
           "VERSION:3.0\n" +
-          "N:;Sasuke;;;\n" +
-          "FN:Sasuke Bot\n" +
-          "ORG:Barboza Developers\n" +
+          "N:;Santa;;;\n" +
+          "FN:Santa Claus Bot\n" +
+          "ORG:Polo Norte Developers\n" +
           "TITLE:\n" +
           "item1.TEL;waid=19709001746:+1 (970) 900-1746\n" +
-          "item1.X-ABLabel:Alien\n" +
-          "X-WA-BIZ-DESCRIPTION:🛸 Llamado grupal universal con estilo.\n" +
-          "X-WA-BIZ-NAME:Sasuke\n" +
+          "item1.X-ABLabel:Trineo\n" +
+          "X-WA-BIZ-DESCRIPTION:🎅 Llamando a todos los Ayudantes y Duendes.\n" +
+          "X-WA-BIZ-NAME:SantaBot\n" +
           "END:VCARD"
 }
 },
@@ -88,7 +97,7 @@ const handler = async (m, { isOwner, isAdmin, conn, text, participants, args}) =
 handler.help = ['todos'];
 handler.tags = ['group'];
 handler.command = /^(tagall|invocar|marcar|todos|invocación)$/i;
-handler.admin = true; // <-- Esta linea fue corregida
+handler.admin = true; 
 handler.group = true;
 
 export default handler;
