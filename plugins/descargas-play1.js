@@ -11,7 +11,7 @@ Ejemplo:.play Rojo 27\n
 Ejemplo:.play https://youtu.be/yQC7Jfxz9cY`);
 }
 
-  await m.react("🎶");
+  await m.react("🎄"); // Emoji inicial festivo
 
   try {
     const isUrl = text.includes("youtube.com") || text.includes("youtu.be");
@@ -21,7 +21,7 @@ Ejemplo:.play https://youtu.be/yQC7Jfxz9cY`);
     if (!videoUrl) {
       const res = await yts(text.trim());
       if (!res ||!res.all || res.all.length === 0) {
-        return m.reply("❌ *No se encontraron resultados para tu búsqueda.*");
+        return m.reply("❌ *El trineo no encontró resultados para tu búsqueda.*"); // Mensaje de error de búsqueda festivo
 }
       video = res.all[0];
 }
@@ -35,15 +35,15 @@ Ejemplo:.play https://youtu.be/yQC7Jfxz9cY`);
 
     // Encabezado y etiquetas navideñas
     const caption = `
-╭─[ Sasuke YouTube ]─╮
-│ ❌ Título: ${title}
-│ 👤 Autor: ${author}
-│ ⏱️ Duración: ${duration}
-│ 👁️ Vistas: ${views}
-│ 🔗 Enlace: ${urlToUse}
+╭─[ Trineo Musical de Sasuke ]─╮ // Título festivo
+│ 🎶 Villancico: ${title} // Etiqueta festiva
+│ 👤 Intérprete: ${author} // Etiqueta festiva
+│ ⏱️ Tiempo en el Polo: ${duration} // Etiqueta festiva
+│ 👁️ Nieve Vistas: ${views} // Etiqueta festiva
+│ 🔗 Pista Musical: ${urlToUse} // Etiqueta festiva
 ╰──────────────────╯
 
-❌ *Procesando tu descarga...*
+🎁 *Santa está empacando tu regalo...* // Mensaje de procesamiento festivo
 `;
 
     const thumbRes = await fetch(thumbnail);
@@ -56,7 +56,7 @@ Ejemplo:.play https://youtu.be/yQC7Jfxz9cY`);
       const dl = json?.result?.download?.url;
       const format = "mp3";
 
-      if (!json?.result?.status ||!dl) return m.reply("❌ *No se pudo obtener el audio.*");
+      if (!json?.result?.status ||!dl) return m.reply("❌ *El Elfo de Audio no encontró el villancico.*"); // Mensaje de error de audio festivo
 
       await conn.sendMessage(m.chat, {
         audio: { url: dl},
@@ -64,7 +64,7 @@ Ejemplo:.play https://youtu.be/yQC7Jfxz9cY`);
         fileName: `${title}.${format}`
 }, { quoted: m});
 
-      await m.react("✅");
+      await m.react("🎧"); // Emoji de éxito de audio festivo
 }
 
     if (command === "play2" || command === "playvid") {
@@ -72,7 +72,7 @@ Ejemplo:.play https://youtu.be/yQC7Jfxz9cY`);
       const json = await apiRes.json();
       const dl = json?.result?.download?.url;
 
-      if (!json?.result?.status ||!dl) return m.reply("❌ *No se pudo obtener el video.*");
+      if (!json?.result?.status ||!dl) return m.reply("❌ *El Trineo de Video falló al cargar la peli.*"); // Mensaje de error de video festivo
 
       const fileRes = await fetch(dl);
       const sizeMB = parseInt(fileRes.headers.get("Content-Length") || 0) / (1024 * 1024);
@@ -85,12 +85,12 @@ Ejemplo:.play https://youtu.be/yQC7Jfxz9cY`);
         caption: ""
 }, { quoted: m});
 
-      await m.react("🎥");
+      await m.react("🎅"); // Emoji de éxito de video festivo
 }
 
 } catch (error) {
     console.error("❌ Error:", error);
-    m.reply("⚠️ *Ocurrió un error al procesar tu solicitud.*");
+    m.reply("⚠️ *Ocurrió un error mágico al procesar tu regalo. Intenta de nuevo.*"); // Mensaje de error final festivo
 }
 };
 
