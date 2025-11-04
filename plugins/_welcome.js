@@ -49,7 +49,7 @@ export async function before(m, { conn, groupMetadata}) {
 
     if (m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_ADD) {
       imgBuffer = await fetch(
-        'https://canvas-8zhi.onrender.com/api/welcome?title=Bienvenido&desc=al%20grupo%20Sasuke%20Bot&background=https://qu.ax/gcBQF.jpg'
+        'https://canvas-8zhi.onrender.com/api/welcome?title=Bienvenido&desc=al%20grupo%20Sasuke%20Bot&background=https://https://qu.ax/yxwAs.jpg'
 ).then(res => res.buffer());
 }
 
