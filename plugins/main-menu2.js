@@ -1,6 +1,9 @@
-let handler = async (m, { isPrems, conn }) => {
-let img = 'https://qu.ax/yxwAs.jpg' 
-let texto = `*☁️ _M E N U - A U D I O S_ ☁️*
+Let handler = async (m, { isPrems, conn }) => {
+let img = 'https://qu.ax/yxwAs.jpg' // Considera usar una imagen de fondo navideña si tienes una.
+let texto = `*🎄 _C A J A - M U S I C A L - N A V I D E Ñ A_ 🎅*
+
+*¡Encuentra tu audio festivo (o no) favorito!*
+*Usa el prefijo antes del nombre del audio.*
 
 ° _Tunometecabrasaramambiche_.
 ° _Me Anda Buscando Anonymous_.
@@ -43,7 +46,7 @@ let texto = `*☁️ _M E N U - A U D I O S_ ☁️*
 ° _Gaspi Frase_.
 ° _Goku Pervertido_.
 ° _Fino Señores_.
-° _Feliz Navidad_.
+° _*¡Feliz Navidad!* 🔔_. **<- ¡Destacado Navideño!**
 ° _El Pepe_.
 ° _El Toxico_.
 ° _Corte Corte_.
