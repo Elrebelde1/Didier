@@ -6,6 +6,7 @@ const handler = async (m, { conn, command, args, text, usedPrefix}) => {
     if (!text) throw `_*[ ⚠️ ] Agrega lo que quieres buscar*_\n\n_Ejemplo:_\n${usedPrefix}${command} Jomblo Happy`;
 
     try {
+        // Buscar canción en Spotify
         const searchUrl = `https://api.vreden.my.id/api/v1/search/spotify?query=${encodeURIComponent(text)}&limit=1`;
         const { data} = await axios.get(searchUrl);
 
@@ -32,6 +33,7 @@ _*🎶 Enviando música...*_`.trim();
 
         await conn.sendFile(m.chat, image, 'spotify.jpg', info, m);
 
+        // Descargar canción
         const downloadUrl = `https://api.vreden.my.id/api/v1/download/spotify?url=${encodeURIComponent(url)}`;
         const response = await fetch(downloadUrl);
         const result = await response.json();
@@ -44,7 +46,7 @@ _*🎶 Enviando música...*_`.trim();
                 audio: { url: audioUrl},
                 fileName: filename,
                 mimetype: 'audio/mpeg',
-                caption: `╭━❰  *Spotify*  ❱━⬣\n${filename}\n╰━❰ *${botname}* ❱━⬣`,
+                caption: `╭━❰  *Spotify*  ❱━⬣\n${filename}\n╰━❰ *Bot* ❱━⬣`,
                 quoted: m
 });
 } else {
