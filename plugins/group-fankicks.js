@@ -1,62 +1,24 @@
-import fs from "fs";
-import path from "path";
+var handler = async (m, { conn, participants, usedPrefix, command }) => {
+let mentionedJid = await m.mentionedJid
+let user = mentionedJid && mentionedJid.length ? mentionedJid[0] : m.quoted && await m.quoted.sender ? await m.quoted.sender : null
+if (!user) return conn.reply(m.chat, `🌀 Debes mencionar a un usuario para poder expulsarlo del grupo.`, m)
+try {
+const groupInfo = await conn.groupMetadata(m.chat)
+const ownerGroup = groupInfo.owner || m.chat.split`-`[0] + '@s.whatsapp.net'
+const ownerBot = global.owner[0][0] + '@s.whatsapp.net'
+if (user === conn.user.jid) return conn.reply(m.chat, `🤖 No puedo eliminar el bot del grupo.`, m)
+if (user === ownerGroup) return conn.reply(m.chat, `🩸 No puedo eliminar al propietario del grupo.`, m)
+if (user === ownerBot) return conn.reply(m.chat, `🦠 No puedo eliminar al propietario del bot.`, m)
+await conn.groupParticipantsUpdate(m.chat, [user], 'remove')
+} catch (e) {
+conn.reply(m.chat, `🫆 Se ha producido un problema.\n> Usa *${usedPrefix}report* para informarlo.\n\n${e.message}`, m)
+}}
 
-global.listaFantasmas = {}; // Lista temporal de usuarios sin actividad
+handler.help = ['kick']
+handler.tags = ['grupo']
+handler.command = ['kick', 'echar', 'hechar','sacar', 'ban']
+handler.admin = true
+handler.group = true
+handler.botAdmin = true
 
-const fankickHandler = async (msg, { conn}) => {
-  const chatId = msg.key.remoteJid;
-  const senderId = msg.key.participant || chatId;
-  const senderClean = senderId.replace(/\D/g, "");
-  const isGroup = chatId.endsWith("@g.us");
-
-  if (!isGroup) {
-    await conn.sendMessage(chatId, {
-      text: "❌ Este comando solo puede usarse en grupos."
-}, { quoted: msg});
-    return;
-}
-
-  const metadata = await conn.groupMetadata(chatId);
-  const participante = metadata.participants.find(p => p.id === senderId);
-  const isAdmin = ["admin", "superadmin"].includes(participante?.admin);
-  const isOwner = global.owner?.some(([id]) => id === senderClean);
-  const isFromMe = msg.key.fromMe;
-
-  if (!isAdmin &&!isOwner &&!isFromMe) {
-    await conn.sendMessage(chatId, {
-      text: "🚫 Solo administradores o owners pueden usar este comando."
-}, { quoted: msg});
-    return;
-}
-
-  const conteoPath = path.resolve("conteo.json");
-  const conteoData = fs.existsSync(conteoPath)
-? JSON.parse(fs.readFileSync(conteoPath, "utf-8"))
-: {};
-
-  const groupConteo = conteoData[chatId] || {};
-
-  const fantasmas = metadata.participants.filter(p =>!groupConteo[p.id]);
-
-  if (fantasmas.length === 0) {
-    await conn.sendMessage(chatId, {
-      text: "✅ No hay fantasmas en este grupo. ¡Todos han enviado mensajes!"
-}, { quoted: msg});
-    return;
-}
-
-  global.listaFantasmas[chatId] = fantasmas.map(u => u.id);
-
-  const texto = `⚠️ *Se detectaron ${fantasmas.length} usuarios fantasmas.*\n` +
-                `Para eliminar a estos usuarios escribe el comando *okfan*.\n\n` +
-                fantasmas.map(u => `@${u.id.split("@")[0]}`).join("\n");
-
-  await conn.sendMessage(chatId, {
-    text: texto,
-    mentions: fantasmas.map(u => u.id)
-}, { quoted: msg});
-};
-
-fankickHandler.command = ["fankick"];
-
-export default fankickHandler;
+export default handler
