@@ -106,7 +106,7 @@ class Copilot {
 // Handler para comandos
 let handler = async (m, { command, text }) => {
     try {
-        if (!text) return m.reply(`*Ejemplo:* .${command} ¿Qué es Node.js?`)
+        if (!text) return m.reply(`*Ejemplo:* .${command} ¿Cómo puedo usar el comando ${command} para preguntar por inteligencia artificial?`)
 
         const copilot = new Copilot()
         let model
