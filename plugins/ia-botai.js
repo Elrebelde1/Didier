@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
   if (!text) {
-    return conn.reply(m.chat, `🌸 ¡Hola! ¿cómo puedo ayudarte hoy?`, m, rcanal);
+    return conn.reply(m.chat, ` ¡Hola! ¿cómo puedo ayudarte hoy?`, m, rcanal);
   }
 
   try {
