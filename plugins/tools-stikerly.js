@@ -81,7 +81,7 @@ const handler = async (msg, { conn, text}) => {
       result += `\n  ◦  *Estado:* ✅ Activo y sin sanciones`;
 }
 
-    result += `\n\n> Powered by: *ghostdev.js*`;
+    result += `\n\n> Powered by: *Barboza*`;
 
     await conn.sendMessage(chatID, { text: result}, { quoted: msg});
     await conn.sendMessage(chatID, {
