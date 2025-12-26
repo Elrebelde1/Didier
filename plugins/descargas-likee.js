@@ -1,4 +1,3 @@
-
 let botStatus = global.botStatus || (global.botStatus = {})
 
 let handler = async (m, { args, command, isOwner}) => {
