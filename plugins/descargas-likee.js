@@ -1,4 +1,5 @@
 
+let botStatus = global.botStatus || (global.botStatus = {})
 
 let handler = async (m, { args, command, isOwner}) => {
   const chatId = m.chat
