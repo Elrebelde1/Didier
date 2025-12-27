@@ -1,37 +1,45 @@
-// Bible Search - By Jose XrL 🔥
-// Free Code Titans
-// https://whatsapp.com/channel/0029ValMlRS6buMFL9d0iQ0S
 
-import fetch from 'node-fetch';
+import { webp2mp4} from '../lib/webp2mp4.js';
+import { ffmpeg} from '../lib/converter.js';
 
-let handler = async (m, { conn, command, text, usedPrefix }) => {
-  if (!text) return conn.reply(m.chat, '🚩 Ingresa la referencia bíblica que deseas buscar.\n\nEjemplo:\n' + `> *${usedPrefix + command}* john 3:16`, m, rcanal);
+// Define tus emojis aquí
+const emoji = '🎥';
+const emoji2 = '⏳';
 
-  await m.react('🕓');
-
-  try {
-    let res = await fetch(`https://api.davidcyriltech.my.id/bible?reference=${encodeURIComponent(text)}`);
-    let json = await res.json();
-
-    if (!json.success) {
-      return conn.reply(m.chat, 'No se encontraron resultados para tu búsqueda.', m);
-    }
-
-    let txt = '`乂  B Í B L I A  -  B Ú S Q U E`';
-    txt += `\n\n  *» Referencia* : ${json.reference}\n`;
-    txt += `  *» Traducción* : ${json.translation}\n`;
-    txt += `  *» Contenido* : ${json.text.trim()}\n`;
-
-    await conn.reply(m.chat, txt, m, rcanal);
-    await m.react('✅');
-  } catch (error) {
-    console.error(error);
-    await m.react('✖️');
-  }
+const handler = async (m, { conn, usedPrefix, command}) => {
+  if (!m.quoted) {
+    return conn.reply(m.chat, `${emoji} Responda a un sticker que desee convertir en video.`, m);
 }
 
-handler.help = ['biblia *<referencia>*'];
-handler.tags = ['search'];
-handler.command = ['biblia'];
+  const mime = m.quoted.mimetype || '';
+  if (!/webp/.test(mime)) {
+    return conn.reply(m.chat, `${emoji} Responda a un sticker que desee convertir en video.`, m);
+}
+
+  const media = await m.quoted.download();
+  let out = Buffer.alloc(0);
+
+  conn.reply(m.chat, `${emoji2} Procesando, por favor espere un momento...`, m);
+
+  if (/webp/.test(mime)) {
+    out = await webp2mp4(media);
+} else if (/audio/.test(mime)) {
+    out = await ffmpeg(media, [
+      '-filter_complex', 'color',
+      '-pix_fmt', 'yuv420p',
+      '-crf', '51',
+      '-c:a', 'copy',
+      '-shortest',
+    ], 'mp3', 'mp4');
+}
+
+  await conn.sendFile(m.chat, out, 'video.mp4', `${emoji} Aquí tienes tu *vídeo* ฅ^•ﻌ•^ฅ.`, m, 0, { thumbnail: out});
+};
+
+handler.help = ['tovideo'];
+handler.tags = ['transformador'];
+handler.group = true;
+handler.register = true;
+handler.command = ['tovideo', 'tomp4', 'mp4', 'togif'];
 
 export default handler;
