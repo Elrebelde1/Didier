@@ -1,116 +1,72 @@
-import { upscaleWithIloveimg, VALID_SCALES } from '../lib/iloveimgUpscale.js'
 
-function parseScale(args = []) {
-  for (let i = 0; i < args.length; i += 1) {
-    const token = args[i]
-    if (!token) continue
-    const direct = token.match(/^([248])(?:x)?$/i)
-    if (direct) return Number(direct[1])
-    const flag = token.match(/^--?(?:scale|x)(?:=(\d+))?$/i)
-    if (flag) {
-      if (flag[1]) return Number(flag[1])
-      const next = args[i + 1]
-      if (next && /^\d+$/.test(next)) return Number(next)
-    }
-  }
-  return 2
-}
+import fs from 'fs';
+import axios from 'axios';
+import FormData from 'form-data';
 
-function pickFileName(mime, scale) {
-  if (/png/i.test(mime)) return `iloveimg_x${scale}.png`
-  return `iloveimg_x${scale}.jpg`
-}
-
-const handler = async (m, { conn, args, usedPrefix, command }) => {
-  let q = m.quoted || m
-  let mime = (q.msg || q).mimetype || q.mediaType || ''
-  const fancyQuoted = await makeFkontak()
-  const quotedContact = fancyQuoted || m
-
-  if (!mime || !/image\/(jpe?g|png)/i.test(mime)) {
-    const quotedContext = m.message?.extendedTextMessage?.contextInfo?.quotedMessage
-    const quotedImage = quotedContext?.imageMessage
-    if (quotedImage) {
-      q = {
-        message: { imageMessage: quotedImage },
-        download: async () => conn.downloadMediaMessage({ key: {}, message: { imageMessage: quotedImage } })
-      }
-      mime = quotedImage.mimetype || 'image/jpeg'
-    }
-  }
-
-  if (!mime || !/image\/(jpe?g|png)/i.test(mime)) {
-    return conn.reply(m.chat, `> ⓘ \`Envía o responde a una imagen JPG/PNG\`\n> ⓘ *Uso:* \`${usedPrefix}${command} [2|4|8]\``, quotedContact)
-  }
-
-  let buffer
+let handler = async (m, { conn}) => {
   try {
-    buffer = await q.download?.()
-  } catch (_) {
-    buffer = null
-  }
-  if (!buffer) {
-    try {
-      buffer = await conn.downloadMediaMessage(q)
-    } catch (err) {
-      return conn.reply(m.chat, `> ⓘ \`No se pudo descargar la imagen:\` *${err.message || err}*`, quotedContact)
-    }
-  }
+    let q = m.quoted? m.quoted: m;
+    let mime = (q.msg || q).mimetype || '';
+    if (!mime) return m.reply(`📸 Responde a una imagen con el comando *${prefix}hd* para mejorarla.`);
+    if (!mime.startsWith('image')) return m.reply(`⚠️ Solo se admiten imágenes.`);
 
-  if (!buffer) {
-    return conn.reply(m.chat, '> ⓘ \`No se pudo obtener la imagen\`', quotedContact)
-  }
+    await conn.sendMessage(m.chat, {
+      react: { text: "🔄", key: m.key}
+});
 
-  let scale = parseScale(args)
-  if (!VALID_SCALES.has(scale)) {
-    return conn.reply(m.chat, '> ⓘ \`Escala inválida. Usa:\` *2, 4 u 8*', quotedContact)
-  }
+    const media = await q.download();
+    const tmp = `/tmp/${Date.now()}.jpg`;
+    fs.writeFileSync(tmp, media);
 
-  await m.react?.('🕑')
-  try {
-    const result = await upscaleWithIloveimg({
-      buffer,
-      fileName: pickFileName(mime, scale),
-      mimeType: /png/i.test(mime) ? 'image/png' : 'image/jpeg',
-      scale
-    })
+    const form = new FormData();
+    form.append('style', 'art'); // o 'photo'
+    form.append('noise', '3');
+    form.append('scale', '2');
+    form.append('image', fs.createReadStream(tmp));
 
-    await conn.sendMessage(
-      m.chat,
-      {
-        image: result.buffer,
-        mimetype: result.contentType || (/png/i.test(result.fileName) ? 'image/png' : 'image/jpeg'),
-        caption: `> ⓘ \`Imagen mejorada\` *x${scale}*`,
-        fileName: result.fileName
-      },
-      { quoted: quotedContact }
-    )
-    await m.react?.('✅')
-  } catch (err) {
-    await m.react?.('❌')
-    const errMsg = err?.response?.status
-      ? `\`Error ${err.response.status}:\` *${err.response.statusText}*`
-      : `\`${err?.message || 'Error desconocido'}\``
-    return conn.reply(m.chat, `> ⓘ \`Fallo al usar IloveIMG:\` *${errMsg}*`, quotedContact)
-  }
+    const res = await axios.post('https://bigjpg.com/api/task/submit', form, {
+      headers: {
+...form.getHeaders(),
+        'User-Agent': 'Mozilla/5.0'
 }
+});
 
-handler.help = ['hd3']
-handler.tags = ['tools']
-handler.command = /^(hd3)$/i
+    const taskId = res.data?.id;
+    if (!taskId) throw 'No se pudo obtener el ID de tarea.';
 
-export default handler
+    await new Promise(r => setTimeout(r, 10000)); // espera 10 segundos
 
-async function makeFkontak() {
-  try {
-    const res = await fetch('https://i.postimg.cc/pLh4hJ7D/download-(1)-(1).png')
-    const thumb2 = Buffer.from(await res.arrayBuffer())
-    return {
-      key: { participants: '0@s.whatsapp.net', remoteJid: 'status@broadcast', fromMe: false, id: 'Halo' },
-      message: { locationMessage: { name: 'HD', jpegThumbnail: thumb2 } },
-      participant: '0@s.whatsapp.net'
-    }
-  } catch {
-    return undefined
-  }
+    const result = await axios.get(`https://bigjpg.com/api/task/${taskId}`, {
+      headers: { 'User-Agent': 'Mozilla/5.0'}
+});
+
+    const output = result.data?.output_url;
+    if (!output) throw 'No se pudo obtener la imagen mejorada.';
+
+    fs.unlinkSync(tmp);
+
+    const caption = `✨ *Imagen mejorada con éxito*\n🆔 Task ID: ${taskId}\n📈 Escala: 2x\n🎨 Estilo: Arte`;
+
+    await conn.sendMessage(m.chat, {
+      image: { url: output},
+      caption
+}, { quoted: m});
+
+    await conn.sendMessage(m.chat, {
+      react: { text: "✅", key: m.key}
+});
+
+} catch (e) {
+    console.error(e);
+    await conn.sendMessage(m.chat, {
+      react: { text: "❌", key: m.key}
+});
+    await m.reply("⚠️ Ocurrió un error al mejorar la imagen.");
 }
+};
+
+handler.help = ['hd'];
+handler.tags = ['ai', 'imagen'];
+handler.command = ['hd', 'upscale', 'enhance'];
+
+export default handler;
