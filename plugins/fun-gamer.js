@@ -2,7 +2,7 @@
 const handler = async (m, { conn, args}) => {
     if (!args[0]) {
         return await conn.sendMessage(m.chat, {
-            text: '👿 *Debes proporcionar un número de teléfono.*\n\nEjemplo:\n`.soporte 5212345678901`'
+            text: '👿 *Debes proporcionar un número de teléfono.*\n\nEjemplo:\n`.wa 5212345678901`'
 });
 }
 
