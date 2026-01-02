@@ -1,51 +1,40 @@
+import fetch from "node-fetch"
+import yts from 'yt-search'
 
-import fetch from 'node-fetch'
-
-const handler = async (m, { conn, text, command, usedPrefix}) => {
-  const apikey = "sylphy-8238wss"
-
-  if (!text) {
-    return m.reply(`📌 *Uso correcto:*\n${usedPrefix + command} <URL de YouTube>\n📍 *Ejemplo:* ${usedPrefix + command} https://youtube.com/watch?v=abc123`)
-}
-
-  if (!text.includes("youtube.com")) {
-    return m.reply("❌ Por favor, proporciona una URL válida de YouTube.")
-}
-
+const handler = async (m, { conn, text, usedPrefix, command}) => {
   try {
-    const res = await fetch(`https://api.sylphy.xyz/download/ytmp4?url=${encodeURIComponent(text)}&apikey=sylphy-8238wss`)
-    const json = await res.json()
+    if (!text.trim()) return conn.reply(m.chat, `❀ Por favor, ingresa el nombre del video a descargar.`, m)
+    await m.react('🕒')
+    const videoMatch = text.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/|v\/))([a-zA-Z0-9_-]{11})/)
+    const query = videoMatch? 'https://youtu.be/' + videoMatch[1]: text
+    const search = await yts(query)
+    const result = videoMatch? search.videos.find(v => v.videoId === videoMatch[1]) || search.all[0]: search.all[0]
+    if (!result) throw 'ꕥ No se encontraron resultados.'
+    const { title, thumbnail, timestamp, views, ago, url, author, seconds} = result
+    if (seconds> 1800) throw '⚠ El contenido supera el límite de duración (10 minutos).'
+    const vistas = formatViews(views)
+    const info = `「✦」Descargando *<${title}>*\n\n> ❑ Canal » *${author.name}*\n> ♡ Vistas » *${vistas}*\n> ✧︎ Duración » *${timestamp}*\n> ☁︎ Publicado » *${ago}*\n> ➪ Link » ${url}`
+    const thumb = (await conn.getFile(thumbnail)).data
+    await conn.sendMessage(m.chat, { image: thumb, caption: info}, { quoted: m})
 
-    if (!json.status ||!json.res ||!json.res.url) {
-      return m.reply("❌ No se pudo obtener el video.")
+    // Solo permite ytmp4
+    if (command === 'ytmp4') {
+      const video = await getVid(url)
+      if (!video?.url) throw '⚠ No se pudo obtener el video.'
+      m.reply(`> ❀ *Vídeo procesado. Servidor:* \`${video.api}\``)
+      await conn.sendFile(m.chat, video.url, `${title}.mp4`, `> ❀ ${title}`, m)
+      await m.react('✔️')
+} else {
+      throw '⚠ Este comando solo permite descargar videos con *ytmp4*.'
 }
-
-    const info = json.res
-    const caption = `
-╭─🎬 *YouTube MP4 Downloader* ─╮
-│
-│ 🎞️ *Título:* ${info.title || "Video"}
-│ 💽 *Formato:* ${info.format || "MP4"}
-│ 📦 *Tamaño:* ${info.filesize || "Desconocido"}
-│ 📥 *Descargando video...*
-╰────────────────────────────╯
-`
-
-    await conn.sendMessage(m.chat, { image: { url: info.thumbnail || ""}, caption}, { quoted: m})
-    await conn.sendMessage(m.chat, {
-      video: { url: info.url},
-      mimetype: 'video/mp4',
-      fileName: `${info.title || "video"}.mp4`
-}, { quoted: m})
-
 } catch (e) {
-    console.error(e)
-    m.reply("⚠️ Error al descargar el video.")
+    await m.react('✖️')
+    return conn.reply(m.chat, typeof e === 'string'? e: '⚠︎ Se ha producido un problema.\n> Usa *' + usedPrefix + 'report* para informarlo.\n\n' + e.message, m)
 }
 }
 
-handler.help = ['ytmp4 <url>']
-handler.tags = ['video']
-handler.command = /^ytmp4$/i
+handler.command = handler.help = ['ytmp4']
+handler.tags = ['descargas']
+handler.group = true
 
 export default handler
