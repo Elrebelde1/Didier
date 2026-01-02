@@ -3,7 +3,7 @@ import fetch from 'node-fetch'
 
 let handler = async (m, { text, usedPrefix, args}) => {
   if (!text) {
-    return m.reply(`🔍 Por favor, dime qué quieres buscar en *Google*.\n\n📌 Ejemplo: ${usedPrefix}google Momo Twice`)
+    return m.reply(`🔍 Por favor, dime qué deseas buscar en *Google*.\n\n📌 Ejemplo: ${usedPrefix}google Momo Twice`)
 }
 
   const query = encodeURIComponent(text.trim())
@@ -17,21 +17,21 @@ let handler = async (m, { text, usedPrefix, args}) => {
 
     if (!Array.isArray(json.data) || json.data.length === 0) {
       await m.react('❌')
-      return m.reply('😕 No encontré resultados para esa búsqueda.')
+      return m.reply('😕 No se encontraron resultados para tu búsqueda.')
 }
 
     let reply = `🔎 *Resultados de búsqueda para:* _${text}_\n\n`
     json.data.slice(0, maxResults).forEach((item, i) => {
       reply += `✨ *${i + 1}. ${item.title || 'Sin título'}*\n`
-      reply += `📝 ${item.description || '_Sin descripción_'}\n`
-      reply += `🔗 ${item.url || '_Sin URL_'}\n\n`
+      reply += `📝 ${item.description || '_Sin descripción disponible_'}\n`
+      reply += `🔗 ${item.url || '_Sin enlace disponible_'}\n\n`
 })
 
     await m.reply(reply.trim())
     await m.react('✅')
 } catch (err) {
     await m.react('⚠️')
-    m.reply(`🚨 Ocurrió un error al buscar en Google.\n> Usa *${usedPrefix}report* para informarlo.\n\n🧾 ${err.message}`)
+    m.reply(`🚨 Ocurrió un error al realizar la búsqueda.\n> Usa *${usedPrefix}report* para informarlo.\n\n🧾 Detalle: ${err.message}`)
 }
 }
 
