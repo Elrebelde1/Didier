@@ -1,4 +1,3 @@
-
 import fetch from "node-fetch"
 import yts from 'yt-search'
 
@@ -40,4 +39,4 @@ handler.group = true
 
 export default handler
 
-// Las funciones auxiliares (getVid, fetchFromApis, formatViews)
+ Las funciones auxiliares (getVid, fetchFromApis, formatViews)
