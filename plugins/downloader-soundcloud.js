@@ -14,26 +14,28 @@ const handler = async (m, { conn, text, command }) => {
     const res = await fetch(`https://delirius-apiofc.vercel.app/search/soundcloud?q=${encodeURIComponent(text.trim())}&limit=10`);
     const data = await res.json();
 
-    if (!data || !data.results || data.results.length === 0) {
+    if (!data || !data.data || data.data.length === 0) {
       return m.reply("❌ *No se encontraron resultados para tu búsqueda.*");
     }
 
-    const track = data.results[0]; // Primer resultado
+    const track = data.data[0]; // Primer resultado
     const caption = `
 ╭─[*Sasuke SoundCloud*]─╮
 │
 │ 📌 *Título:* ${track.title}
-│ 👤 *Autor:* ${track.user}
-│ ⏱️ *Duración:* ${track.duration}
-│ 🔗 *Enlace:* ${track.url}
+│ 👤 *Autor:* ${track.artist}
+│ ⏱️ *Duración:* ${Math.floor(track.duration / 1000)} segundos
+│ ❤️ *Likes:* ${track.likes}
+│ ▶️ *Reproducciones:* ${track.play}
+│ 🔗 *Enlace:* ${track.link}
 ╰──────────────────╯
 
 📥 *Procesando tu descarga...*
 `;
 
     // Miniatura
-    if (track.thumbnail) {
-      const thumbnailRes = await fetch(track.thumbnail);
+    if (track.image) {
+      const thumbnailRes = await fetch(track.image);
       const thumbnail = await thumbnailRes.buffer();
       await conn.sendFile(m.chat, thumbnail, "thumb.jpg", caption, m);
     } else {
@@ -41,7 +43,7 @@ const handler = async (m, { conn, text, command }) => {
     }
 
     // Descargar audio
-    const apiRes = await fetch(`https://delirius-apiofc.vercel.app/download/soundcloud?url=${encodeURIComponent(track.url)}`);
+    const apiRes = await fetch(`https://delirius-apiofc.vercel.app/download/soundcloud?url=${encodeURIComponent(track.link)}`);
     const api = await apiRes.json();
     const dl = api.url;
 
@@ -69,6 +71,6 @@ const handler = async (m, { conn, text, command }) => {
 
 handler.help = ["play"];
 handler.tags = ["descargas", "soundcloud"];
-handler.command = ["souncloud"];
+handler.command = ["soundcloud"]; // corregí el typo
 
 export default handler;
