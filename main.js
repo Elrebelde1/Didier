@@ -492,6 +492,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
 app.post('/api/get-pairing-code', async (req, res) => {
     let { phoneNumber } = req.body;
     if (!phoneNumber) return res.status(400).send({ error: "Número faltante" });
@@ -509,8 +510,31 @@ app.post('/api/get-pairing-code', async (req, res) => {
     }
 });
 
+
+app.get('/api/get-pairing-code', async (req, res) => {
+    let { number } = req.query; 
+    if (!number) {
+        return res.status(200).send({ 
+            status: "Online", 
+            message: "API del Bot funcionando. Para obtener un código usa el parámetro ?number=tu_numero" 
+        });
+    }
+    try {
+        const num = number.replace(/\D/g, '');
+        const code = await assistant_accessJadiBot({ 
+            m: null, 
+            conn: global.conn, 
+            phoneNumber: num, 
+            fromCommand: false 
+        }); 
+        res.status(200).send({ code });
+    } catch (e) {
+        res.status(500).send({ error: e.message });
+    }
+});
+
 const PORT2 = 3032; 
 
 app.listen(PORT2, '0.0.0.0', () => {
-    console.log(chalk.greenBright(`\nAPI WEB: Servidor activo en puerto ${PORT2}`));
+    console.log(chalk.greenBright(`\n✅ API WEB: Servidor activo en puerto ${PORT2}`));
 });
