@@ -18,13 +18,13 @@ let handler = async (m, { text, command }) => {
     }
 
     // Mensaje final con identidad y creador
-    const resultMessage = `🤖 *Delirius Bot responde:*\n\n${json.data}\n\n👤 *Creador:* ${json.creator}`
+    const resultMessage = `🤖 *Sasuke bot responde:*\n\n${json.data}\n\n👤 *Creador:* ${json.creator}`
 
     await m.reply(resultMessage)
 
   } catch (e) {
     console.error("Error en .delirius:", e)
-    m.reply("⚠️ Error al procesar la solicitud de Delirius Bot.")
+    m.reply("⚠️ Error al procesar la solicitud de Sasuke.")
   }
 }
 
