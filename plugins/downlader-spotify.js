@@ -120,7 +120,7 @@ function isSpotifyURL(text) {
 
 async function getSpotifyTrackInfo(url) {
   try {
-    const apiUrl = `https://delirius-apiofc.vercel.app/download/spotifydl?url=${encodeURIComponent(url)}`;
+    const apiUrl = `https://api.delirius.store/download/spotifydl?url=${encodeURIComponent(url)}`;
     const response = await fetch(apiUrl);
     const data = await response.json();
     
