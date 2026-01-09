@@ -11,7 +11,7 @@ const handler = async (m, { conn, text, command }) => {
 
   try {
     // Buscar en SoundCloud
-    const res = await fetch(`https://delirius-apiofc.vercel.app/search/soundcloud?q=${encodeURIComponent(text.trim())}&limit=10`);
+    const res = await fetch(`https://api.delirius.store/search/soundcloud?q=${encodeURIComponent(text.trim())}&limit=10`);
     const data = await res.json();
 
     if (!data || !data.data || data.data.length === 0) {
@@ -44,7 +44,7 @@ const handler = async (m, { conn, text, command }) => {
     }
 
     // Descargar audio
-    const apiRes = await fetch(`https://delirius-apiofc.vercel.app/download/soundcloud?url=${encodeURIComponent(track.link)}`);
+    const apiRes = await fetch(`https://api.delirius.store/download/soundcloud?url=${encodeURIComponent(track.link)}`);
     const api = await apiRes.json();
     const dl = api?.data?.download; // ✅ CORREGIDO
 
