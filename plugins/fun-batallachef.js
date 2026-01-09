@@ -1,64 +1,53 @@
 
-const handler = async (m, { conn}) => {
-    const ingredientes = [
-        { nombre: "🍅 Tomate", ventaja: "Aporta frescura y equilibrio al plato."},
-        { nombre: "🌶️ Chile", ventaja: "Intensifica el sabor con un toque picante."},
-        { nombre: "🥩 Carne Premium", ventaja: "Mayor calidad y mejor textura en el platillo."},
-        { nombre: "🧀 Queso Gourmet", ventaja: "Potencia el sabor con una textura única."},
-        { nombre: "🍄 Champiñones", ventaja: "Añade profundidad con su sabor terroso."},
-        { nombre: "🦐 Mariscos", ventaja: "Aporta un toque exótico y sofisticado."}
-    ];
+import fetch from 'node-fetch'
 
-    let mensaje = `🍳 *Batalla de Chefs* 🍳\n\n📌 **Elige un ingrediente clave para tu platillo:**\n`;
+const handler = async (m, { conn, text }) => {
+  try {
+    if (!text) return conn.reply(m.chat, '💥 Por favor, proporciona un código de país.', m)
+    await m.react('🕒')
 
-    ingredientes.forEach((ingrediente, i) => {
-        mensaje += `🔹 ${i + 1}. ${ingrediente.nombre} - ${ingrediente.ventaja}\n`;
-});
+    // Ajusta el URL de la API según el código de país proporcionado
+    const apiUrl = `https://api.dorratz.com/v2/pais/${text}`
+    const res = await fetch(apiUrl)
+    const json = await res.json()
 
-    mensaje += "\n📌 *Responde con el número de la opción que elijas.*";
+    if (!json || !json.nombre) throw '⚠ No se encontraron resultados para este código de país.'
 
-    conn.chefBattleGame = conn.chefBattleGame || {};
-    conn.chefBattleGame[m.chat] = {};
+    // Componemos la respuesta con los datos extraídos
+    const response = `
+      🇧🇴 *Información de ${json.nombre}*
+      📞 *Código:* ${json.código}
+      🏳️ *Bandera:* ${json.bandera}
+      🏙️ *Capital:* ${json.capital}
+      💵 *Moneda:* ${json.moneda}
+      🌍 *Continente:* ${json.continente}
+      👥 *Población:* ${json.población}
+      🗺️ *Área:* ${json.área} km²
+      🗣️ *Idioma oficial:* ${json.idioma_oficial}
+      🚩 *Código ISO:* ${json.código_iso}
+      🇦🇷 *Región:* ${json.región}
+      🎉 *Fiesta Nacional:* ${json.fiesta_nacional}
+      🌦️ *Clima:* ${json.clima}
+      ⛏️ *Recursos Naturales:* ${json.recursos_naturales}
+      💰 *Economía:* ${json.economía}
+      ⬅️ *Exportaciones:* ${json.exportaciones}
+      ➡️ *Importaciones:* ${json.importaciones}
+      🌴 *Turismo:* ${json.turismo}
+      🎶 *Himno Nacional:* ${json.himno_nacional}
+      📖 *Mitos y Leyendas:* ${json.mitos_leyendas}
+      🍽️ *Gastronomía:* ${json.gastronomía}
+    `;
 
-    await conn.sendMessage(m.chat, { text: mensaje});
-};
-
-handler.before = async (m, { conn}) => {
-    if (conn.chefBattleGame && conn.chefBattleGame[m.chat]) {
-        const eleccion = parseInt(m.text.trim());
-        const ingredientes = [
-            "🍅 Tomate", "🌶️ Chile", "🥩 Carne Premium", "🧀 Queso Gourmet",
-            "🍄 Champiñones", "🦐 Mariscos"
-        ];
-
-        if (eleccion>= 1 && eleccion <= ingredientes.length) {
-            const ingredienteSeleccionado = ingredientes[eleccion - 1];
-            const usuario = conn.getName(m.sender);
-            conn.chefBattleGame[m.chat] = { nombre: usuario, ingrediente: ingredienteSeleccionado};
-
-            await conn.reply(m.chat, `✅ *${usuario} ha elegido:* ${ingredienteSeleccionado}\n⌛ Preparándose para la batalla culinaria...`, m);
-
-            setTimeout(() => {
-                const resultado = [
-                    "🏆 ¡Tu platillo fue un éxito y te coronaste como el chef ganador!",
-                    "💀 Tu comida salió quemada y perdiste la competencia.",
-                    "⚔️ Fue un empate, ambos chefs demostraron grandes habilidades.",
-                    "🔥 Tu platillo impresionó, pero faltó un toque especial.",
-                    "💢 Tu receta era interesante, pero tu rival logró destacarse más."
-                ];
-                const desenlace = resultado[Math.floor(Math.random() * resultado.length)];
-
-                let mensajeFinal = `🍳 *Batalla de Chefs* 🍳\n\n👤 *Jugador:* ${usuario}\n🍽️ *Ingrediente clave:* ${ingredienteSeleccionado}\n\n${desenlace}`;
-
-                conn.sendMessage(m.chat, { text: mensajeFinal});
-
-                delete conn.chefBattleGame[m.chat];
-}, 5000);
-} else {
-            await conn.reply(m.chat, "❌ *Opción inválida. Elige un número entre 1 y 6.*", m);
+    await conn.reply(m.chat, response, m)
+    await m.react('✔️')
+  } catch (e) {
+    await m.react('✖️')
+    conn.reply(m.chat, typeof e === 'string' ? e : '⚠ Ocurrió un error al procesar la consulta.', m)
+  }
 }
-}
-};
 
-handler.command = ["batallachef"];
-export default handler;
+handler.command = handler.help = ['pais']
+handler.tags = ['info']
+handler.group = false
+
+export default handler
