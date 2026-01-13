@@ -1,3 +1,4 @@
+
 import yts from "yt-search";
 import fetch from "node-fetch";
 
@@ -14,7 +15,7 @@ const handler = async (m, { conn, text, command, usedPrefix }) => {
 
     if (!video) {
       await m.react("❌");
-      return m.reply("🌑 *Mis ojos no ven nada con ese nombre. Intenta de nuevo.*");
+      return m.reply("🌑 *Mis ojos no ven nada con ese nombre.*");
     }
 
     const urlToUse = video.url;
@@ -36,19 +37,29 @@ const handler = async (m, { conn, text, command, usedPrefix }) => {
     await conn.sendFile(m.chat, thumbnail, "thumb.jpg", caption, m);
 
     const isVideo = /play2|playvid/i.test(command);
-    const type = isVideo ? "video" : "audio";
-    const quality = isVideo ? "360" : "128";
-    const apiUrl = `https://api.vreden.my.id/api/v1/download/youtube/${type}?url=${encodeURIComponent(urlToUse)}&quality=${quality}`;
-    
-    const apiRes = await fetch(apiUrl);
-    const json = await apiRes.json();
+    let dlUrl = null;
 
-    if (!json.status || !json.result?.download?.status) {
-      const errorMsg = json.result?.download?.message || json.message || "Error de conversión";
-      throw new Error(errorMsg);
+    try {
+      const type = isVideo ? "video" : "audio";
+      const apiVreden = await fetch(`https://api.vreden.my.id/api/v1/download/youtube/${type}?url=${encodeURIComponent(urlToUse)}&quality=${isVideo ? "360" : "128"}`);
+      const resVreden = await apiVreden.json();
+      
+      if (resVreden.status && resVreden.result?.download?.url && resVreden.result.download.status !== false) {
+        dlUrl = resVreden.result.download.url;
+      }
+    } catch {
+      dlUrl = null;
     }
 
-    const dlUrl = json.result.download.url;
+    if (!dlUrl) {
+      const apiBackup = await fetch(`https://api.agatz.xyz/api/yt${isVideo ? "mp4" : "mp3"}?url=${encodeURIComponent(urlToUse)}`);
+      const resBackup = await apiBackup.json();
+      if (resBackup.status === 200 || resBackup.status === true) {
+        dlUrl = resBackup.data?.url || resBackup.result;
+      }
+    }
+
+    if (!dlUrl) throw new Error("Todas las fuentes de energía han fallado.");
 
     if (isVideo) {
       await conn.sendMessage(m.chat, {
