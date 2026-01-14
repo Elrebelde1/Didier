@@ -25,7 +25,7 @@ handler.before = async function (m, { conn, participants, groupMetadata}) {
                     "VERSION:3.0\n" +
                     "N:;The King's Bot;;;\n" +
                     "FN:The King's Bot\n" +
-                    "ORG:Barboza Developers\n" +
+                    "ORG: Benja Developers\n" +
                     "TITLE:\n" +
                     "item1.TEL;waid=19709001746:+1 (970) 900-1746\n" +
                     "item1.X-ABLabel:King\n" +
