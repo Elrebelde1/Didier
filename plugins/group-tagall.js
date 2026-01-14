@@ -49,7 +49,7 @@ const handler = async (m, { isOwner, isAdmin, conn, text, participants, args}) =
   messageText += `┗━━━━━━━━━━━━━━━━━━┛\n\n`;
   messageText += `> ⚡ *𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾*`;
 
-  const imageUrl = 'https://qu.ax/Ny958';
+  const imageUrl = 'https://qu.ax/PVER5';
 
   const fkontak = {
     key: {
@@ -61,7 +61,7 @@ const handler = async (m, { isOwner, isAdmin, conn, text, participants, args}) =
     message: {
       locationMessage: {
         name: "𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾",
-        jpegThumbnail: await (await fetch('https://cdn-sunflareteam.vercel.app/images/fa68a035ca.jpg')).buffer(),
+        jpegThumbnail: await (await fetch('https://qu.ax/PVER5')).buffer(),
         vcard:
           "BEGIN:VCARD\n" +
           "VERSION:3.0\n" +
