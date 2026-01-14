@@ -13,8 +13,8 @@
 │ 📡 Conexión Estable 24/7
 │
 │ 📌 *ENLACES OFICIALES:*
-│ 📢 [Canal de Actualizaciones](https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18)
-│ 📬 [Grupo de Soporte](https://chat.whatsapp.com/DDtCymznMag3A7WTgwqT7X)
+│ 📢 [Canal de Actualizaciones](https://whatsapp.com/channel/0029VbC5dkNG3R3dlVy9YZ3Z)
+│ 📬 [Grupo de Soporte](https://chat.whatsapp.com/Js6E0ZkSjJICm9NJ9lYjId)
 │
 │ 👑 *CONTACTO OWNERS:*
 │ 🛡️ [Owner 1](https://wa.me/56944169535)
