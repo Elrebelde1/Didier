@@ -2,7 +2,7 @@ import axios from 'axios'
 
 let handler = async (m, { conn, args}) => {
   if (!args[0]) throw `
-╭─❍ *🔥 RETO 16 VS 16 | SASUKE BOT MD*
+╭─❍ *🔥 RETO 16 VS 16 | 𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾*
 │
 │⏳ *Horario:*
 │🇲🇽 MÉXICO:
