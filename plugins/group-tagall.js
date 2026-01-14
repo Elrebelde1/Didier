@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 
 const handler = async (m, { isOwner, isAdmin, conn, text, participants, args}) => {
   const chat = global.db.data.chats[m.chat] || {};
-  const emoji = chat.emojiTag || '🤖';
+  const emoji = chat.emojiTag || '👑';
 
   if (!(isAdmin || isOwner)) {
     global.dfail('admin', m, conn);
@@ -22,7 +22,7 @@ const handler = async (m, { isOwner, isAdmin, conn, text, participants, args}) =
     '596': '🇲🇶', '597': '🇸🇷', '598': '🇺🇾', '53': '🇨🇺', '20': '🇪🇬', '972': '🇮🇱',
     '90': '🇹🇷', '63': '🇵🇭', '62': '🇮🇩', '60': '🇲🇾', '65': '🇸🇬', '66': '🇹🇭',
     '31': '🇳🇱', '32': '🇧🇪', '30': '🇬🇷', '36': '🇭🇺', '46': '🇸🇪', '47': '🇳🇴',
-    '48': '🇵🇱', '421': '🇸🇰', '420': '🇨🇿', '40': '🇷🇴', '43': '🇦🇹', '373': '🇲🇩'
+    '48': '🇵🇱', '421': '🇸🇰', '420': '🇨🇿', '40': '🇷🇴', '43': '🇦🇹', '373': '🇲僧'
   };
 
   const getCountryFlag = (id) => {
@@ -32,14 +32,22 @@ const handler = async (m, { isOwner, isAdmin, conn, text, participants, args}) =
     if (!countryFlags[prefix]) {
       prefix = phoneNumber.substring(0, 2);
     }
-    return countryFlags[prefix] || '🏳️‍🌈';
+    return countryFlags[prefix] || '👤';
   };
 
-  let messageText = `*${groupName}*\n\n*Integrantes: ${participants.length}*\n${customMessage}\n┌──⭓ *Despierten*\n`;
+  // --- NUEVO DISEÑO ---
+  let messageText = `👑 *LLAMADO REAL DEL GRUPO* 👑\n\n`;
+  messageText += `🏰 *Grupo:* _${groupName}_\n`;
+  messageText += `👥 *Súbditos:* _${participants.length}_\n`;
+  if (customMessage) messageText += `📢 *Mensaje:* ${customMessage}\n`;
+  messageText += `\n┏━━━━━━━━━━━━━━━━━━┓\n`;
+  
   for (const mem of participants) {
-    messageText += `${emoji} ${getCountryFlag(mem.id)} @${mem.id.split('@')[0]}\n`;
+    messageText += `┃ ${emoji} ${getCountryFlag(mem.id)} @${mem.id.split('@')[0]}\n`;
   }
-  messageText += `└───────⭓\n\n𝘚𝘶𝘱𝘦𝘳 𝘉𝘰𝘵 𝘞𝘩𝘢𝘵𝘴𝘈𝘱𝘱 🚩`;
+  
+  messageText += `┗━━━━━━━━━━━━━━━━━━┛\n\n`;
+  messageText += `> ⚡ *𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾*`;
 
   const imageUrl = 'https://qu.ax/Ny958';
 
@@ -48,30 +56,29 @@ const handler = async (m, { isOwner, isAdmin, conn, text, participants, args}) =
       participants: "0@s.whatsapp.net",
       remoteJid: "status@broadcast",
       fromMe: false,
-      id: "AlienMenu"
+      id: "KingTagall"
     },
     message: {
       locationMessage: {
-        name: "*Sasuke Bot MD 🌀*",
+        name: "𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾",
         jpegThumbnail: await (await fetch('https://cdn-sunflareteam.vercel.app/images/fa68a035ca.jpg')).buffer(),
         vcard:
           "BEGIN:VCARD\n" +
           "VERSION:3.0\n" +
-          "N:;Sasuke;;;\n" +
-          "FN:Sasuke Bot\n" +
+          "N:;KingBot;;;\n" +
+          "FN:The King's Bot\n" +
           "ORG:Barboza Developers\n" +
           "TITLE:\n" +
           "item1.TEL;waid=19709001746:+1 (970) 900-1746\n" +
-          "item1.X-ABLabel:Alien\n" +
-          "X-WA-BIZ-DESCRIPTION:🛸 Llamado grupal universal con estilo.\n" +
-          "X-WA-BIZ-NAME:Sasuke\n" +
+          "item1.X-ABLabel:👑 King\n" +
+          "X-WA-BIZ-DESCRIPTION:El bot que domina tus grupos.\n" +
+          "X-WA-BIZ-NAME:The King's Bot\n" +
           "END:VCARD"
       }
     },
     participant: "0@s.whatsapp.net"
   };
 
-  // Solo enviamos la imagen con el caption y menciones
   await conn.sendMessage(m.chat, {
     image: { url: imageUrl },
     caption: messageText,
