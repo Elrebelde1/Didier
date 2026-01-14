@@ -1,12 +1,12 @@
 const handler = async (m, { conn }) => {
   // Imagen actualizada
-  const img = 'https://qu.ax/PVER5' 
+  const img = 'https://files.catbox.moe/aosovz.jpg' 
   
   const texto = `
 *╭━━〔 🎵 CAJA MUSICAL 🎵 〕━━╮*
 *┃*
 *┃*  ¡𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾!
-*┃* ➢ _¡Feliz Navidad!_ 🔔
+*┃* ➢ 🔔
 *┃*
 *┣━━〔 🎄 CATEGORÍAS 🎄 〕━━*
 *┃*
