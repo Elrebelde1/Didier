@@ -1,19 +1,17 @@
 import fetch from "node-fetch";
 
 const handler = async (m, { isOwner, isAdmin, conn, text, participants, args }) => {
-  // Verificación estricta de permisos
   if (!(isAdmin || isOwner)) {
     global.dfail('admin', m, conn);
-    return; // Detiene la ejecución
+    return;
   }
 
   const chat = global.db.data.chats[m.chat] || {};
-  const emoji = chat.emojiTag || '👑';
+  const emoji = chat.emojiTag || '👟';
   const customMessage = args.join(' ');
   const groupMetadata = await conn.groupMetadata(m.chat);
   const groupName = groupMetadata.subject;
 
-  // Mapa de banderas optimizado
   const countryFlags = {
     '1': '🇺🇸', '44': '🇬🇧', '33': '🇫🇷', '49': '🇩🇪', '34': '🇪🇸', '55': '🇧🇷', 
     '52': '🇲🇽', '54': '🇦🇷', '57': '🇨🇴', '51': '🇵🇪', '56': '🇨🇱', '58': '🇻🇪', 
@@ -29,26 +27,27 @@ const handler = async (m, { isOwner, isAdmin, conn, text, participants, args }) 
     return countryFlags[p3] || countryFlags[p2] || '👤';
   };
 
-  // --- DISEÑO MEJORADO ---
-  let messageText = `╔══✦ *CONVOCATORIA REAL* ✦══╗\n║\n`;
-  messageText += `║ 🏰 *Grupo:* ${groupName}\n`;
-  messageText += `║ 👥 *Súbditos:* ${participants.length}\n`;
-  
+  let messageText = `╭╾━━━━╼ 〔 👟 〕 ╾━━━━╼╮\n`;
+  messageText += `│  👟 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝖨𝗇𝗏𝗈𝖼𝖺𝖼𝗂𝗈́𝗇*\n`;
+  messageText += `│\n`;
+  messageText += `│ 🛸 *𝖦𝗋𝗎𝗉𝗈:* ${groupName}\n`;
+  messageText += `│ 👥 *𝖬𝗂𝖾𝗆𝖻𝗋𝗈𝗌:* ${participants.length}\n`;
+
   if (customMessage) {
-    messageText += `║ 📢 *Mensaje:* ${customMessage}\n`;
+    messageText += `│ 📢 *𝖬𝖾𝗇𝗌𝖺𝗃𝖾:* ${customMessage}\n`;
   }
-  
-  messageText += `║\n╠══✦ *LISTA DE MIEMBROS* ✦══\n║\n`;
+
+  messageText += `│\n│  *ʟɪsᴛᴀ ᴅᴇ ᴍɪᴇᴍʙʀᴏs:*\n`;
 
   for (const mem of participants) {
-    messageText += `║ ${emoji} ${getCountryFlag(mem.id)} @${mem.id.split('@')[0]}\n`;
+    messageText += `│ ${emoji} ${getCountryFlag(mem.id)} @${mem.id.split('@')[0]}\n`;
   }
 
-  messageText += `║\n╚══✦ 𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾 ✦══╝`;
+  messageText += `│\n╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯\n`;
+  messageText += `*𝖡𝗒 𝖤𝗅𝗂𝗎𝖽 • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍*`;
 
-  const imageUrl = 'https://qu.ax/PVER5';
-
-  // Miniatura para el mensaje (fkontak)
+  // Nueva imagen proporcionada
+  const imageUrl = 'https://files.catbox.moe/dcp02s.jpg';
   const thumb = await (await fetch(imageUrl)).buffer();
 
   const fkontak = {
@@ -56,11 +55,11 @@ const handler = async (m, { isOwner, isAdmin, conn, text, participants, args }) 
       participants: "0@s.whatsapp.net", 
       remoteJid: "status@broadcast", 
       fromMe: false, 
-      id: "KingTagall" 
+      id: "VansTagall" 
     },
     message: {
       locationMessage: {
-        name: "𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾",
+        name: "𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 👟",
         jpegThumbnail: thumb
       }
     }
@@ -76,8 +75,6 @@ const handler = async (m, { isOwner, isAdmin, conn, text, participants, args }) 
 handler.help = ['todos'];
 handler.tags = ['group'];
 handler.command = /^(tagall|invocar|marcar|todos|invocación)$/i;
-
-// Cambiado a true para que el bot gestione el permiso automáticamente
 handler.admin = true; 
 handler.group = true;
 
