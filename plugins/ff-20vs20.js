@@ -2,7 +2,7 @@ import axios from 'axios'
 
 let handler = async (m, { conn, args}) => {
   if (!args[0]) throw `
-╭─❍ *💢 RETO 20 VS 20 | SASUKE BOT MD*
+╭─❍ *💢 RETO 20 VS 20*
 │
 │⏳ *Horario:*
 │🇲🇽 MÉXICO:
@@ -81,7 +81,7 @@ let handler = async (m, { conn, args}) => {
       orderMessage: {
         itemCount: 20,
         message: titulo,
-        footerText: "Sasuke Bot MD",
+        footerText: "Benja",
         thumbnail: thumbBuffer,
         surface: 2,
         sellerJid: "0@s.whatsapp.net"
