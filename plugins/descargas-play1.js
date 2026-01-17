@@ -1,127 +1,51 @@
-import fetch from 'node-fetch'
+import fetch from "node-fetch"
 import yts from 'yt-search'
 
-const estados = {}
-const TIEMPO_ESPERA = 120000
-
-let handler = async (m, { conn, usedPrefix, command, text }) => {
-  if (!text) return; 
-
-  const isLink = text.includes('youtube.com') || text.includes('youtu.be')
-  let video
-
-  try {
-    if (isLink) {
-      const videoId = text.split('v=')[1]?.split('&')[0] || text.split('/').pop()
-      const search = await yts({ videoId })
-      video = search
-    } else {
-      const search = await yts(text)
-      video = search.videos[0]
-    }
-
-    if (!video) return; 
-
-    await m.react("👟");
-
-    if (estados[m.sender]) clearTimeout(estados[m.sender].timeout)
-
-    estados[m.sender] = {
-      step: 'esperando_tipo',
-      videoInfo: video,
-      command,
-      timeout: setTimeout(() => delete estados[m.sender], TIEMPO_ESPERA)
-    }
-
-    const info = `
-👟  *𝖁 𝖆 𝖓 𝖘 - 𝕭 𝖔 𝖙* 👟
-  
-  ╭╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╮
-  │
-  │  📑 *ᴛíᴛᴜʟᴏ:* ${video.title}
-  │  👤 *ᴀᴜᴛᴏʀ:* ${video.author.name}
-  │  ⏳ *ᴅᴜʀᴀᴄɪóɴ:* ${video.timestamp}
-  │  👁️ *ᴠɪsᴛᴀs:* ${video.views.toLocaleString()}
-  │
-  ╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯
-
-  ✨ *ꜱᴇʟᴇᴄᴄɪᴏɴᴀ ᴛᴜ ᴇsᴛɪʟᴏ:*
-
-  *1️⃣* ⋄ ᴀᴜᴅɪᴏ (ᴍᴘ3) 
-  *2️⃣* ⋄ ᴠɪᴅᴇᴏ (ᴍᴘ4)
-
-  > _Responde con el número para descargar_
-  > _Powered by Eliud_`.trim();
-
-    await conn.sendMessage(
-      m.chat,
-      { image: { url: video.thumbnail }, caption: info },
-      { quoted: m }
-    )
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-handler.before = async (m, { conn }) => {
-  const estado = estados[m.sender]
-  if (!estado || !m.text) return false
-
-  const resp = m.text.trim()
-  const isAudio = resp === '1' || resp === '1️⃣'
-  const isVideo = resp === '2' || resp === '2️⃣'
-
-  if (isAudio || isVideo) {
-    clearTimeout(estado.timeout)
-    const tipo = isAudio ? 'mp3' : 'mp4'
-
-    await m.react("📥");
-    await m.reply(`⚙️ *Vans Bot está procesando tu pedido...*`);
-
-    await enviarArchivo(m, conn, estado.videoInfo.url, tipo, estado.videoInfo.title)
-    delete estados[m.sender]
-    return true
-  }
-  return false
-}
-
-async function enviarArchivo(m, conn, url, tipo, titulo) {
-  try {
-    const apiURL = `https://optishield.uk/api/?type=youtubedl&apikey=c50919b9828c357cd81e753f03d4c000&url=${encodeURIComponent(url)}&video=${tipo === 'mp3' ? 0 : 1}`
-    const res = await fetch(apiURL)
-    const json = await res.json()
-
-    if (!json?.result?.download) throw new Error('API Fail')
-
-    const buffer = await (await fetch(json.result.download)).buffer()
-    const mimetype = tipo === 'mp3' ? 'audio/mpeg' : 'video/mp4'
-
-    if (tipo === 'mp3') {
-      await conn.sendMessage(m.chat, { audio: buffer, mimetype, fileName: `${titulo}.mp3` }, { quoted: m })
-    } else {
-      await conn.sendMessage(m.chat, { video: buffer, mimetype, fileName: `${titulo}.mp4`, caption: `👟 *Tu pedido de Vans Bot ha llegado.*` }, { quoted: m })
-    }
-    await m.react("✅");
-
-  } catch (e) {
+const handler = async (m, { conn, text, usedPrefix, command }) => {
     try {
-      const vType = tipo === 'mp3' ? 'audio' : 'video'
-      const vRes = await fetch(`https://api.vreden.my.id/api/v1/download/youtube/${vType}?url=${encodeURIComponent(url)}&quality=128`)
-      const vJson = await vRes.json()
-      const dlUrl = vJson.result?.download?.url || vJson.result?.url
+        if (!text.trim()) return conn.reply(m.chat, `❀ Por favor, ingresa el nombre o link de YouTube.`, m)
+        await m.react('🕒')
 
-      if (dlUrl) {
-        await conn.sendMessage(m.chat, { [tipo === 'mp3' ? 'audio' : 'video']: { url: dlUrl }, mimetype: tipo === 'mp3' ? 'audio/mpeg' : 'video/mp4' }, { quoted: m })
-        await m.react("✅")
-      } else { throw new Error() }
-    } catch (err) {
-      await m.reply(`❌ *Hubo un error en los servidores de Vans Bot.*`)
+        const videoMatch = text.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/|v\/))([a-zA-Z0-9_-]{11})/)
+        const query = videoMatch ? 'https://youtu.be/' + videoMatch[1] : text
+        const search = await yts(query)
+        const result = videoMatch ? search.videos.find(v => v.videoId === videoMatch[1]) || search.all[0] : search.all[0]
+
+        if (!result) throw 'ꕥ No se encontraron resultados.'
+
+        const { title, thumbnail, timestamp, views, url, author } = result
+        const info = `「✦」Descargando *<${title}>*\n\n> ❑ Canal » *${author.name}*\n> ♡ Vistas » *${views.toLocaleString()}*\n> ✧︎ Duración » *${timestamp}*\n> ➪ Link » ${url}`
+
+        const thumb = (await conn.getFile(thumbnail)).data
+        await conn.sendMessage(m.chat, { image: thumb, caption: info }, { quoted: m })
+
+        const isAudio = ['play', 'yta', 'ytmp3', 'playaudio'].includes(command)
+        const endpoint = isAudio ? 'ytaudio' : 'ytvideo'
+
+        const res = await fetch(`https://api-adonix.ultraplus.click/download/${endpoint}?apikey=AdonixKeyvr85v01953&url=${encodeURIComponent(url)}`)
+        const json = await res.json()
+
+        if (!json.status || !json.data?.url) throw '⚠ No se pudo obtener el archivo del servidor Adonix.'
+
+        if (isAudio) {
+            await conn.sendMessage(m.chat, { 
+                audio: { url: json.data.url }, 
+                fileName: `${title}.mp3`, 
+                mimetype: 'audio/mpeg' 
+            }, { quoted: m })
+        } else {
+            await conn.sendFile(m.chat, json.data.url, `${title}.mp4`, `> ❀ ${title}`, m)
+        }
+
+        await m.react('✔️')
+
+    } catch (e) {
+        await m.react('✖️')
+        return conn.reply(m.chat, `⚠︎ Error: ${e}`, m)
     }
-  }
 }
 
-handler.help = ['play']
-handler.tags = ['descargas']
-handler.command = ['play', 'musicdl']
+handler.command = /^(play|yta|ytmp3|play2|ytv|ytmp4|playaudio|mp4)$/i
+handler.group = false
 
 export default handler
