@@ -12,25 +12,33 @@ let handlerLista = async (m, { conn }) => {
 
   const lista = JSON.parse(fs.readFileSync(listaPath, 'utf-8'))
 
-  let texto = `╭─❍ *📋 LISTA 12 VS 12*\n│\n│❤️ *Titulares:*\n`
+  let texto = `╭╾━━━━╼ 〔 📋 〕 ╾━━━━╼╮\n`
+  texto += `│  👟 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝖫𝗂𝗌𝗍𝖺 𝟣𝟤𝗏𝗌𝟣𝟤*\n`
+  texto += `│\n`
+  texto += `│ ❤️ *ᴛɪᴛᴜʟᴀʀᴇs:*\n`
+  
   if (lista.titulares.length === 0) {
-    texto += `│ (vacío)\n`
+    texto += `│  (𝗏𝖺𝖼𝗂́𝗈)\n`
   } else {
     lista.titulares.forEach((j, i) => {
-      texto += `│ ${i+1}. ${j}\n`
+      texto += `│  ${i+1}. ${j}\n`
     })
   }
 
-  texto += `│\n│👍 *Suplentes:*\n`
+  texto += `│\n`
+  texto += `│ 👍 *sᴜᴘʟᴇɴᴛᴇs:*\n`
+  
   if (lista.suplentes.length === 0) {
-    texto += `│ (vacío)\n`
+    texto += `│  (𝗏𝖺𝖼𝗂́𝗈)\n`
   } else {
     lista.suplentes.forEach((j, i) => {
-      texto += `│ ${i+1}. ${j}\n`
+      texto += `│  ${i+1}. ${j}\n`
     })
   }
 
-  texto += `╰────────────────────❍`
+  texto += `│\n`
+  texto += `╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯\n`
+  texto += `*𝖡𝗒 𝖤𝗅𝗂𝗎𝖽 • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍*`
 
   await conn.sendMessage(m.chat, { text: texto })
 }
