@@ -49,7 +49,7 @@ async function ihancer(buffer, { method = 1, size = 'low' } = {}) {
     form.append('is_pro_version', 'false')
     form.append('is_enhancing_more', 'false')
     form.append('max_image_size', size)
-    form.append('file', buffer, `sasuke_${Date.now()}.jpg`)
+    form.append('file', buffer, `benja_${Date.now()}.jpg`)
 
     const { data } = await axios.post('https://ihancer.com/api/enhance', form, {
         headers: {
