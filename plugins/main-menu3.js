@@ -1,65 +1,63 @@
 const handler = async (m, { isPrems, conn }) => {
-  // Última vez que reclamó
   const last = global.db.data.users[m.sender].lastcofre || 0
   const now = new Date() * 1
   const cooldown = 0 
 
   if (now - last < cooldown) {
     const wait = msToTime((last + cooldown) - now)
-    throw `⏳ El sistema está procesando otros pedidos. Vuelve en *${wait}*.`
+    throw `⏳ 𝖤𝗅 𝗌𝗂𝗌𝗍𝖾𝗆𝖺 𝖾𝗌𝗍𝖺́ 𝗉𝗋𝗈𝖼𝖾𝗌𝖺𝗇𝖽𝗈... 𝖤𝗌𝗉𝖾𝗋𝖺 *${wait}*.`
   }
 
-  const img = 'https://files.catbox.moe/aosovz.jpg' // Imagen actualizada
+  // Imagen principal de Vans Bot
+  const img = 'https://files.catbox.moe/dcp02s.jpg' 
+  
   const texto = `
-🎨💎 *𝕄𝔼ℕ𝕌́ 𝔻𝔼 𝔻𝕀𝕊𝔼ℕ̃𝕆𝕊 - 𝕃𝕆𝔾𝕆𝕊* 💎🎨
-––––––––––––––––––––––––––––––––––––––
+╭╾━━━━╼ 〔 🎨 〕 ╾━━━━╼╮
+│  👟 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝕯𝖎𝖘𝖊𝖓̃𝖔𝖘*
+│
+│  🛸 *𝖦𝗋𝖺𝗉𝗁𝗂𝖼 𝖲𝗒𝗌𝗍𝖾𝗆*
+│  🛹 *𝖡𝗒 𝖤𝗅𝗂𝗎𝖽*
+│
+│  *ᴇsᴛɪʟᴏs ᴅᴇ ᴛᴇxᴛᴏ:*
+│  ◦ .logoneon
+│  ◦ .logoglitch
+│  ◦ .logograffiti3d
+│  ◦ .logomatrix
+│  ◦ .logofuturista
+│  ◦ .logocielo
+│
+│  *ɢᴀᴍɪɴɢ & ᴘᴇʀsᴏɴᴀᴊᴇs:*
+│  ◦ .logogaming
+│  ◦ .logonaruto
+│  ◦ .logodragonball
+│  ◦ .logoarmy
+│  ◦ .logopubg
+│  ◦ .logopubgfem
+│  ◦ .logoguerrero
+│  ◦ .logolol
+│  ◦ .logoamongus
+│
+│  *ᴇғᴇᴄᴛᴏs ʏ ʀᴇᴅᴇs:*
+│  ◦ .tweet
+│  ◦ .sadcat
+│  ◦ .logocorazon
+│  ◦ .logopareja
+│  ◦ .logoalas
+│  ◦ .logonube
+│  ◦ .logohorror
+│
+│  *ᴍᴜʟᴛɪᴍᴇᴅɪᴀ:*
+│  ◦ .logoportadaplayer
+│  ◦ .logoportadaff
+│  ◦ .logovideotiger
+│  ◦ .logovideointro
+│  ◦ .logovideogaming
+│
+╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯
+*𝖡𝗒 𝖤𝗅𝗂𝗎𝖽 • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍*`.trim()
 
-_¡Crea logos increíbles con un solo comando!_
-_Uso: .comando (texto)_
-
-*✨ ESTILOS DE TEXTO:*
-▸ .logoneon (texto)
-▸ .logoglitch (texto)
-▸ .logograffiti3d (texto)
-▸ .logomatrix (texto)
-▸ .logofuturista (texto)
-▸ .logocielo (texto)
-
-*🎮 GAMING & PERSONAJES:*
-▸ .logogaming (texto)
-▸ .logonaruto (texto)
-▸ .logodragonball (texto)
-▸ .logoarmy (texto)
-▸ .logopubg (texto)
-▸ .logopubgfem (texto)
-▸ .logoguerrero (texto)
-▸ .logolol (texto)
-▸ .logoamongus (texto)
-
-*🎭 EFECTOS Y REDES:*
-▸ .tweet (comentario)
-▸ .sadcat (texto)
-▸ .logocorazon (texto)
-▸ .logopareja (texto)
-▸ .logoalas (texto)
-▸ .logonube (texto)
-▸ .logohorror (texto)
-
-*🎬 MULTIMEDIA:*
-▸ .logoportadaplayer (texto)
-▸ .logoportadaff (texto)
-▸ .logovideotiger (texto)
-▸ .logovideointro (texto)
-▸ .logovideogaming (texto)
-
-––––––––––––––––––––––––––––––––––––––
-_🚀 ¡Genera tu identidad visual ahora!_
-`
-
-  // Enviar imagen + caption
   await conn.sendMessage(m.chat, { image: { url: img }, caption: texto }, { quoted: m })
 
-  // Actualizar última vez
   global.db.data.users[m.sender].lastcofre = now
 }
 
