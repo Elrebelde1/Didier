@@ -29,7 +29,7 @@ function verify() {
 verify();
 
 // Diseño para ""
-say('Benja', {
+say('Eliud', {
   font: 'block', // Estilo 'block' para un diseño fuerte
   align: 'center',
   colors: ['red', 'white'], // Colores que recuerdan al Sharingan
