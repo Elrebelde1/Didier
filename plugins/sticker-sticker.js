@@ -1,35 +1,35 @@
-import { sticker} from '../lib/sticker.js'
+import { sticker } from '../lib/sticker.js'
 import uploadFile from '../lib/uploadFile.js'
 import uploadImage from '../lib/uploadImage.js'
-import { webp2png} from '../lib/webp2mp4.js'
+import { webp2png } from '../lib/webp2mp4.js'
 
-let handler = async (m, { conn, args, usedPrefix, command}) => {
+let handler = async (m, { conn, args, usedPrefix, command }) => {
   let stiker = false
-  const emoji = '🦅'
+  const emoji = '👟'
 
   try {
-    let q = m.quoted? m.quoted: m
+    let q = m.quoted ? m.quoted : m
     let mime = (q.msg || q).mimetype || q.mediaType || ''
 
     if (/webp|image|video/g.test(mime)) {
-      if (/video/g.test(mime) && (q.msg || q).seconds> 15) {
-        return m.reply(`⚡ *Lɪᴍɪᴛᴇ Exᴄᴇᴅɪᴅᴏ...*\n\nNᴏ ᴛᴇɴɢᴏ ᴛɪᴇᴍᴘᴏ ᴘᴀʀᴀ ᴠɪᴅᴇᴏs ʟᴀʀɢᴏs. Mᴀxɪᴍᴏ 15 sᴇɢᴜɴᴅᴏs.`)
-}
+      if (/video/g.test(mime) && (q.msg || q).seconds > 15) {
+        return m.reply(`⚠️ *𝖫𝗂́𝗆𝗂𝗍𝖾 𝖤𝗑𝖼𝖾𝖽𝗂𝖽𝗈...*\n\n𝖤𝗅 𝗏𝗂𝖽𝖾𝗈 𝖾𝗌 𝖽𝖾𝗆𝖺𝗌𝗂𝖺𝖽𝗈 𝗅𝖺𝗋𝗀𝗈. 𝖬𝖺́𝗑𝗂𝗆𝗈 15 𝗌𝖾𝗀𝗎𝗇𝖽𝗈𝗌.`)
+      }
 
       let img = await q.download?.()
       if (!img) {
-        // --- AHORA ESTE ESTÁ ABAJO EN LA LÓGICA DE ERROR ---
         return conn.reply(m.chat,
-`╭─〔 ⛈️ 𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾 ⛈️ 〕─╮
+`╭╾━━━━╼ 〔 ❌ 〕 ╾━━━━╼╮
+│  👟 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝕰𝖗𝖗𝖔𝖗*
 │
-│ ❌ *Fᴀʟʟᴏ ᴇʟ Jᴜᴛsᴜ:*
-│    Nᴏ sᴇ ᴘᴜᴅᴏ ᴄʀᴇᴀʀ ᴇʟ sᴛɪᴄᴋᴇʀ.
+│ ❌ *𝖥𝖺𝗅𝗅𝗈 𝖺𝗅 𝖼𝗋𝖾𝖺𝗋:*
+│    𝖭𝗈 𝗌𝖾 𝗉𝗎𝖽𝗈 𝗉𝗋𝗈𝖼𝖾𝗌𝖺𝗋.
 │
-│ 📌 *Asᴇɢᴜʀᴀᴛᴇ ᴅᴇ ᴇɴᴠɪᴀʀ ᴍᴇᴅɪᴀ*
-│    ᴏ ᴜɴ ʟɪɴᴋ ᴅᴇʀᴇᴄᴛᴏ.
+│ 📌 *𝖠𝗌𝖾𝗀𝗎́𝗋𝖺𝗍𝖾 𝖽𝖾 𝖾𝗇𝗏𝗂𝖺𝗋*
+│    𝗂𝗆𝖺𝗀𝖾𝗇, 𝗏𝗂𝖽𝖾𝗈 𝗈 𝗅𝗂𝗇𝗄.
 │
-╰───────────────────────────╯`, m, fake)
-}
+╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯`, m)
+      }
 
       let out
       try {
@@ -39,42 +39,42 @@ let handler = async (m, { conn, args, usedPrefix, command}) => {
         let texto2 = packstickers.text2 || global.packsticker2
 
         stiker = await sticker(img, false, texto1, texto2)
-} finally {
+      } finally {
         if (!stiker) {
           if (/webp/g.test(mime)) out = await webp2png(img)
           else if (/image/g.test(mime)) out = await uploadImage(img)
           else if (/video/g.test(mime)) out = await uploadFile(img)
-          if (typeof out!== 'string') out = await uploadImage(img)
+          if (typeof out !== 'string') out = await uploadImage(img)
           stiker = await sticker(false, out, global.packsticker, global.packsticker2)
-}
-}
-} else if (args[0]) {
+        }
+      }
+    } else if (args[0]) {
       if (isUrl(args[0])) {
         stiker = await sticker(false, args[0], global.packsticker, global.packsticker2)
-} else {
-        return m.reply(`💢 *Eʀʀᴏʀ ᴅᴇ Rᴇɴᴇɢᴀᴅᴏ:* Esᴀ URL ɴᴏ ᴇs ᴠᴀʟɪᴅᴀ.`)
-}
-}
-} finally {
+      } else {
+        return m.reply(`💢 *𝖤𝗋𝗋𝗈𝗋:* 𝖤𝗌𝖺 𝖴𝖱𝖫 𝗇𝗈 𝖾𝗌 𝗏𝖺́𝗅𝗂𝖽𝖺.`)
+      }
+    }
+  } finally {
     if (stiker) {
-      conn.sendFile(m.chat, stiker, 'sticker.webp', '', m, rcanal)
-} else {
-      // --- AHORA ESTE ES EL MENSAJE DE ENTRADA/AYUDA ---
+      conn.sendFile(m.chat, stiker, 'sticker.webp', '', m)
+    } else {
       return conn.reply(m.chat,
-`╭─〔 ♆ 𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾 ♆ 〕─╮
+`╭╾━━━━╼ 〔 👟 〕 ╾━━━━╼╮
+│  👟 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝕾𝖙𝖎𝖈𝖐𝖊𝖗𝖘*
 │
-│ 👁️ *Eɴᴠɪᴀ ᴜɴᴀ ɪᴍᴀɢᴇɴ ᴏ ᴠɪᴅᴇᴏ*
-│      ᴘᴀʀᴀ ᴍᴏsᴛʀᴀʀ ᴛᴜ ᴘᴏᴅᴇʀ.
+│ 📸 *𝖤𝗇𝗏𝗂𝖺 𝗂𝗆𝖺𝗀𝖾𝗇 𝗈 𝗏𝗂𝖽𝖾𝗈*
+│      𝗋𝖾𝗌𝗉𝗈𝗇𝖽𝗂𝖾𝗇𝖽𝗈 𝖺 𝖾𝗌𝗍𝖾 𝗆𝗌𝗀.
 │
-│ ⏳ *Tɪᴇᴍᴘᴏ ʟɪᴍɪᴛᴇ:* 15s
+│ ⏳ *𝖳𝗂𝖾𝗆𝗉𝗈 𝗅𝗂́𝗆𝗂𝗍𝖾:* 15𝗌
 │
-│ 🔗 *O ᴜsᴀ ᴜɴ ᴇɴʟᴀᴄᴇ:*
-│     ${usedPrefix + command} ᴜʀʟ
+│ 🔗 *𝖴𝗌𝖺 𝗎𝗇 𝖾𝗇𝗅𝖺𝖼𝖾:*
+│     ${usedPrefix + command} 𝗎𝗋𝗅
 │
-│ 🌑 "Lᴀ ᴏsᴄᴜʀɪᴅᴀᴅ ᴇs ᴍɪ ɢᴜɪᴀ"
-╰────────────────────────────╯`, m, rcanal)
-}
-}
+│ 🛹 "𝖮𝖿𝖿 𝖳𝗁𝖾 𝖶𝖺𝗅𝗅 𝖲𝗍𝗒𝗅𝖾"
+╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯\n*𝖡𝗒 𝖤𝗅𝗂𝗎𝖽 • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍*`, m)
+    }
+  }
 }
 
 handler.help = ['stiker <img>', 'sticker <url>']
