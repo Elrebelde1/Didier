@@ -100,14 +100,14 @@ function contarDescarga() {
     try {
       contador = parseInt(readFileSync(CONTADOR_PATH, 'utf8')) || 0;
     } catch (error) {
-      console.error('Error leyendo contador:', error);
+      console.error('Error:', error);
     }
   }
   contador += 1;
   try {
     writeFileSync(CONTADOR_PATH, String(contador));
   } catch (error) {
-    console.error('Error escribiendo contador:', error);
+    console.error('Error:', error);
   }
   return contador;
 }
@@ -123,7 +123,6 @@ const getFileSize = async (url) => {
     const contentLength = response.headers.get('content-length');
     return contentLength ? parseInt(contentLength) : 0;
   } catch (error) {
-    console.error('Error obteniendo tamaño:', error);
     return 0;
   }
 };
@@ -133,26 +132,27 @@ const sendAudioWithRetry = async (conn, chat, audioUrl, videoTitle, maxRetries =
   let thumbnailBuffer;
 
   try {
-    const response = await axios.get('https://files.catbox.moe/u6vqdk.jpg', { responseType: 'arraybuffer' });
+    // URL de imagen sugerida para Vans
+    const response = await axios.get('https://files.catbox.moe/1j784p.jpg', { responseType: 'arraybuffer' });
     thumbnailBuffer = Buffer.from(response.data, 'binary');
   } catch (error) {
-    console.error('⚠️ ɴᴏ ꜱᴇ ᴘᴜᴅᴏ ᴏʙᴛᴇɴᴇʀ ᴇʟ ᴛʜᴜᴍʙɴᴀɪʟ:', error.message);
+    console.error('⚠️ Thumbnail error');
   }
 
   const fileSize = await getFileSize(audioUrl);
-  const maxSizeInBytes = 30 * 1024 * 1024;
+  const maxSizeInBytes = 35 * 1024 * 1024;
   const sendAsDocument = fileSize > maxSizeInBytes;
 
   const messageOptions = {
     mimetype: 'audio/mpeg',
     contextInfo: {
       externalAdReply: {
-        title: videoTitle,
-        body: sendAsDocument ? "📁 𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 - ᴅᴏᴄᴜᴍᴇɴᴛᴏ" : "𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾™",
+        title: `👟 VANS MP3: ${videoTitle}`,
+        body: sendAsDocument ? "📁 Enviado como Archivo Pesado" : "🏁 Off The Wall - Audio Player",
         previewType: 'PHOTO',
         thumbnail: thumbnailBuffer,
         mediaType: 1,
-        sourceUrl: 'https://Benja.Bot.Com'
+        sourceUrl: 'https://vans.com'
       }
     }
   };
@@ -170,11 +170,8 @@ const sendAudioWithRetry = async (conn, chat, audioUrl, videoTitle, maxRetries =
       await conn.sendMessage(chat, messageOptions);
       break;
     } catch (error) {
-      console.error(`Intento ${attempt + 1} fallido:`, error.message);
       attempt++;
-      if (attempt >= maxRetries) {
-        throw new Error('No se pudo enviar el audio después de múltiples intentos');
-      }
+      if (attempt >= maxRetries) throw new Error('Error al enviar audio.');
     }
   }
 };
@@ -182,50 +179,56 @@ const sendAudioWithRetry = async (conn, chat, audioUrl, videoTitle, maxRetries =
 const handler = async (m, { conn, args, usedPrefix, command }) => {
   if (!args[0]) {
     return conn.reply(m.chat,
-      `[❗️] ᴜsᴏ: ${usedPrefix}ytmp3 <ɴᴏᴍʙʀᴇ ᴅᴇʟ ᴠɪᴅᴇᴏ ᴏ ᴜʀʟ>\n> ᴇᴊᴇᴍᴘʟᴏ: ${usedPrefix}ytmp3 ʏᴏ ᴛᴇ ᴠᴏʏ ᴀᴍᴀʀ ɴsʏɴᴄ`,
+      `🏁 *VANS YOUTUBE PLAYER* 🏁\n\n` +
+      `👟 *Uso:* ${usedPrefix}${command} <nombre o url>\n` +
+      `👟 *Ejemplo:* ${usedPrefix}${command} Burn It Down Linkin Park\n\n` +
+      `> _Procesando audio en alta calidad 128kbps_`,
       m);
   }
 
   try {
-    await m.react('📥');
+    await m.react('🏁');
 
     const query = args.join(" ");
     let videoUrl = '';
     let videoData = null;
 
-    await conn.reply(m.chat, `ᴇsᴘᴇʀᴀ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ...🔄`, m, {
-      mentions: [m.sender]
-    });
+    const waitingMsg = `🛹 *[ VANS SEARCH ]*\n\n` +
+                       `⌛ Buscando la pista en los servidores...\n` +
+                       `> _Estamos preparando tu contenido_`;
+    
+    await conn.reply(m.chat, waitingMsg, m);
 
     if (isYouTubeURL(query)) {
       videoUrl = query;
     } else {
       const search = await yts(query);
-      if (!search.videos || !search.videos.length) throw new Error("ɴᴏ sᴇ ᴇɴᴄᴏɴᴛʀó ɴɪɴɢúɴ ᴠɪᴅᴇᴏ");
+      if (!search.videos || !search.videos.length) throw new Error("No se encontró el video, intenta otro nombre.");
 
       videoData = search.videos[0];
       videoUrl = videoData.url;
     }
 
-    await m.react('📤');
+    await m.react('📥');
 
     const yt = new Youtubers();
     const info = await yt.infoVideo(videoUrl);
     const audioUrl = await yt.getDownloadLink(info.key);
 
+    await m.react('📤');
     await sendAudioWithRetry(conn, m.chat, audioUrl, info.judul);
 
     const total = contarDescarga();
-    await m.react('🟢');
+    await m.react('✅');
 
   } catch (e) {
     console.error(e);
-    await m.react('🔴');
-    return m.reply(`❌ ᴇʀʀᴏʀ: ${e.message}`);
+    await m.react('❌');
+    return m.reply(`👟 *VANS ERROR:* ${e.message}`);
   }
 };
 
-handler.command = /^ytmp3$/i;
+handler.command = /^(ytmp3|audio|play)$/i;
 handler.help = ['ytmp3 <query/url>'];
 handler.tags = ['descargas'];
 export default handler;
