@@ -40,7 +40,7 @@ async function searchSpotify(query) {
     const response = await fetch(`https://api.delirius.store/search/spotify?q=${encodeURIComponent(query)}&limit=1`);
     const res = await response.json();
     if (!res.status || !res.data.length) return null;
-    return res.data[0]; // Retorna el primer resultado de la búsqueda
+    return res.data[0]; 
   } catch (error) {
     console.error('Error en búsqueda Spotify:', error);
     return null;
@@ -52,7 +52,7 @@ async function downloadSpotify(url) {
     const response = await fetch(`https://api.delirius.store/download/spotifydl?url=${encodeURIComponent(url)}`);
     const res = await response.json();
     if (!res.status) return null;
-    return res.data; // Retorna title, author, image, download, etc.
+    return res.data; 
   } catch (error) {
     console.error('Error en descarga Spotify:', error);
     return null;
@@ -81,12 +81,12 @@ const sendAudioWithRetry = async (conn, chat, audioUrl, trackTitle, artistName, 
     ptt: false,
     contextInfo: {
       externalAdReply: {
-        title: trackTitle,
-        body: `${artistName} • 🎵 Spotify Downloader`,
+        title: `🎵 ${trackTitle}`,
+        body: `ᴀʀᴛɪsᴛᴀ: ${artistName} • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍`,
         previewType: 'PHOTO',
         thumbnail: thumbnailBuffer,
         mediaType: 1,
-        sourceUrl: 'https://api.delirius.store'
+        sourceUrl: 'https://github.com' // Puedes cambiar esto por tu canal
       }
     }
   };
@@ -106,18 +106,17 @@ const sendAudioWithRetry = async (conn, chat, audioUrl, trackTitle, artistName, 
 
 const handler = async (m, { conn, args, usedPrefix, command }) => {
   if (!args[0]) {
-    return conn.reply(m.chat, `[❗️] ᴜsᴏ: ${usedPrefix}${command} <ɴᴏᴍʙʀᴇ ᴏ ᴜʀʟ ᴅᴇ sᴘᴏᴛɪғʏ>`, m);
+    return conn.reply(m.chat, `👟 *[ 𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 ]* 👟\n\n> ᴜsᴏ: ${usedPrefix}${command} <ɴᴏᴍʙʀᴇ ᴏ ᴜʀʟ ᴅᴇ sᴘᴏᴛɪғʏ>`, m);
   }
 
   try {
-    await m.react('🎵');
+    await m.react('🎧');
     const input = args.join(" ");
     let spotifyUrl = "";
     let trackData = null;
 
-    await m.reply(`🔍 ʙᴜsᴄᴀɴᴅᴏ "${input}" ᴇɴ sᴘᴏᴛɪғʏ...`);
+    await m.reply(`🔍 ʙᴜsᴄᴀɴᴅᴏ "${input}" ᴇɴ ʟᴏs ᴀʟᴠᴇᴀʟᴏs ᴅᴇ sᴘᴏᴛɪғʏ...`);
 
-    // 1. Obtener la URL de Spotify
     if (isSpotifyURL(input)) {
       spotifyUrl = input;
     } else {
@@ -126,15 +125,13 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
       spotifyUrl = searchResult.url;
     }
 
-    // 2. Obtener link de descarga y metadatos
     await m.react('📥');
     trackData = await downloadSpotify(spotifyUrl);
-    
+
     if (!trackData || !trackData.download) {
       throw "No se pudo obtener el enlace de descarga directo.";
     }
 
-    // 3. Enviar el audio
     await m.react('📤');
     await sendAudioWithRetry(
       conn,
@@ -146,12 +143,12 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
     );
 
     contarDescarga();
-    await m.react('🟢');
+    await m.react('👟');
 
   } catch (e) {
     console.error(e);
-    await m.react('🔴');
-    return m.reply(`❌ ᴇʀʀᴏʀ: ${e.toString()}`);
+    await m.react('❌');
+    return m.reply(`⚠️ *Error en los servidores de Eliud:* ${e.toString()}`);
   }
 };
 
