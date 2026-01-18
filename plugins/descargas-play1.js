@@ -3,49 +3,59 @@ import yts from 'yt-search'
 
 const handler = async (m, { conn, text, usedPrefix, command }) => {
     try {
-        if (!text.trim()) return conn.reply(m.chat, `❀ Por favor, ingresa el nombre o link de YouTube.`, m)
+        if (!text.trim()) return conn.reply(m.chat, `❀ Ingresa el nombre o link de YouTube.`, m)
         await m.react('🕒')
 
-        const videoMatch = text.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/|v\/))([a-zA-Z0-9_-]{11})/)
-        const query = videoMatch ? 'https://youtu.be/' + videoMatch[1] : text
-        const search = await yts(query)
-        const result = videoMatch ? search.videos.find(v => v.videoId === videoMatch[1]) || search.all[0] : search.all[0]
+        // Búsqueda del video
+        const search = await yts(text)
+        const video = search.videos[0]
+        if (!video) throw 'ꕥ No se encontraron resultados.'
 
-        if (!result) throw 'ꕥ No se encontraron resultados.'
+        const { title, thumbnail, timestamp, views, url, author } = video
+        const info = `「✦」*DESCARGADOR YOUTUBE*\n\n> ❑ *Título:* ${title}\n> ✧︎ *Duración:* ${timestamp}\n> ➪ *Link:* ${url}`
 
-        const { title, thumbnail, timestamp, views, url, author } = result
-        const info = `「✦」Descargando *<${title}>*\n\n> ❑ Canal » *${author.name}*\n> ♡ Vistas » *${views.toLocaleString()}*\n> ✧︎ Duración » *${timestamp}*\n> ➪ Link » ${url}`
+        await conn.sendMessage(m.chat, { image: { url: thumbnail }, caption: info }, { quoted: m })
 
-        const thumb = (await conn.getFile(thumbnail)).data
-        await conn.sendMessage(m.chat, { image: thumb, caption: info }, { quoted: m })
+        // Configuración de la API Sylphy
+        const isAudio = /^(play|yta|ytmp3)$/i.test(command)
+        const type = isAudio ? 'ytmp3' : 'ytmp4'
+        const quality = isAudio ? '128kbps' : '360p' // Valores obligatorios por la API
+        const apiKey = 'sylphy-6f150d'
 
-        const isAudio = ['play', 'yta', 'ytmp3', 'playaudio'].includes(command)
-        const endpoint = isAudio ? 'ytaudio' : 'ytvideo'
-
-        const res = await fetch(`https://api-adonix.ultraplus.click/download/${endpoint}?apikey=AdonixKeyvr85v01953&url=${encodeURIComponent(url)}`)
+        const apiUrl = `https://sylphy.xyz/download/${type}?url=${encodeURIComponent(url)}&q=${quality}&api_key=${apiKey}`
+        
+        const res = await fetch(apiUrl)
         const json = await res.json()
 
-        if (!json.status || !json.data?.url) throw '⚠ No se pudo obtener el archivo del servidor Adonix.'
+        // Manejo de errores de la API
+        if (!json.status) {
+            throw json.error || 'Error desconocido en el servidor.'
+        }
+
+        const downloadUrl = json.result.url || json.result // Ajustar según la estructura exacta de 'result'
 
         if (isAudio) {
             await conn.sendMessage(m.chat, { 
-                audio: { url: json.data.url }, 
-                fileName: `${title}.mp3`, 
-                mimetype: 'audio/mpeg' 
+                audio: { url: downloadUrl }, 
+                mimetype: 'audio/mpeg',
+                fileName: `${title}.mp3`
             }, { quoted: m })
         } else {
-            await conn.sendFile(m.chat, json.data.url, `${title}.mp4`, `> ❀ ${title}`, m)
+            await conn.sendMessage(m.chat, { 
+                video: { url: downloadUrl }, 
+                caption: `> ❀ ${title}`,
+                mimetype: 'video/mp4'
+            }, { quoted: m })
         }
 
         await m.react('✔️')
 
     } catch (e) {
+        console.error(e)
         await m.react('✖️')
-        return conn.reply(m.chat, `⚠︎ Error: ${e}`, m)
+        return conn.reply(m.chat, `⚠︎ *Error:* ${e}`, m)
     }
 }
 
-handler.command = /^(play|yta|ytmp3|play2|ytv|ytmp4|playaudio|mp4)$/i
-handler.group = false
-
+handler.command = /^(play|yta|ytmp3|ytv|ytmp4|mp4)$/i
 export default handler
