@@ -10,21 +10,21 @@ const clockString = ms => {
 
 const saludarSegunHora = () => {
   const hora = new Date().getHours();
-  if (hora >= 5 && hora < 12) return '🌅 ¡𝖡𝗎𝖾𝗇𝗈𝗌 𝖽𝗂́𝖺𝗌!';
-  if (hora >= 12 && hora < 19) return '☀️ ¡𝖡𝗎𝖾𝗇𝗈𝗌 𝗍𝖺𝗋𝖽𝖾𝗌!';
-  return '🌙 ¡𝖡𝗎𝖾𝗇𝖺𝗌 𝗇𝗈𝖼𝗁𝖾𝗌!';
+  if (hora >= 5 && hora < 12) return '🌅 ¡Buenos días!';
+  if (hora >= 12 && hora < 19) return '☀️ ¡Buenas tardes!';
+  return '🌙 ¡Buenas noches!';
 };
 
-// Imagen proporcionada y diseño de Vans
-const imgVans = 'https://files.catbox.moe/dcp02s.jpg';
-const borderTop = '╭╾━━━━╼ 〔 👟 〕 ╾━━━━╼╮';
-const borderBottom = '╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯';
+// Imagen Actualizada y Diseño Didier Bot
+const imgDidier = 'https://files.catbox.moe/dpofx7.jpg';
+const borderTop = '╭╾━━━━╼ 〔 ⚡ 〕 ╾━━━━╼╮';
+const borderBottom = '╰╾━━━━╼ 〔 🚀 〕 ╾━━━━╼╯';
 
 const menuFooter = `
 ${borderTop}
-│  🛸 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝕾𝖞𝖘𝖙𝖊𝖒*
-│  🛠️ *𝖡𝗒 𝖤𝗅𝗂𝗎𝖽*
-│  🛹 *𝖮𝖿𝖿 𝖳𝗁𝖾 𝖶𝖺𝗅𝗅*
+┃  ✨ *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 𝐒𝐘𝐒𝐓𝐄𝐌*
+┃  🛠️ *By Didier Developers*
+┃  ⚡ *Power & Speed*
 ${borderBottom}
 `.trim();
 
@@ -39,28 +39,27 @@ const handler = async (m, { conn, usedPrefix }) => {
     const { exp, level, limit } = user;
     const { min, xp } = xpRange(level, global.multiplier || 1);
     const totalUsers = Object.keys(global.db.data.users).length;
-    const mode = global.opts?.self ? '𝖯𝗋𝗂𝗏𝖺𝖽𝗈 🔒' : '𝖯𝗎́𝖻𝗅𝗂𝖼𝗈 🌍';
     const uptime = clockString(process.uptime() * 1000);
     const tagUsuario = `@${m.sender.split('@')[0]}`;
     const userName = (await conn.getName?.(m.sender)) || tagUsuario;
 
-    const adText = ["Vans System", "Eliud Interface", "Urban Bot"].getRandom();
+    const adText = ["Didier System", "Interface V3", "Cyber Bot"].getRandom();
 
     let thumbnailBuffer;
     try {
-      const response = await axios.get(imgVans, { responseType: 'arraybuffer' });
+      const response = await axios.get(imgDidier, { responseType: 'arraybuffer' });
       thumbnailBuffer = Buffer.from(response.data);
     } catch {
       thumbnailBuffer = Buffer.alloc(0);
     }
 
     const fkontak = {
-      key: { participants: "0@s.whatsapp.net", fromMe: false, id: "VansBot" },
+      key: { participants: "0@s.whatsapp.net", fromMe: false, id: "DidierBot" },
       message: {
         locationMessage: {
           name: adText,
           jpegThumbnail: thumbnailBuffer,
-          vcard: "BEGIN:VCARD\nVERSION:3.0\nN:;Eliud;;;\nFN:Eliud\nORG:VansBot\nEND:VCARD"
+          vcard: "BEGIN:VCARD\nVERSION:3.0\nN:;Didier;;;\nFN:Didier\nORG:DidierBot\nEND:VCARD"
         }
       },
       participant: "0@s.whatsapp.net"
@@ -76,46 +75,51 @@ const handler = async (m, { conn, usedPrefix }) => {
         cmds.forEach(cmd => categorizedCommands[tag].add(usedPrefix + cmd));
       });
 
+    // Diseño de Emojis por Categoría - Full Variados
     const categoryEmojis = {
-      anime: '🌸', info: '📢', search: '🔍', diversión: '🎢', subbots: '🤖',
-      rpg: '🛹', registro: '📝', sticker: '🎨', imagen: '📸', logo: '🖋️',
-      premium: '🎟️', configuración: '⚙️', descargas: '📥', herramientas: '🔧',
-      nsfw: '🔞', 'base de datos': '📁', audios: '🎧', freefire: '🔫', otros: '🧩'
+      anime: '🏮', info: 'ℹ️', search: '🔭', diversión: '🎮', subbots: '🤖',
+      rpg: '🛡️', registro: '📝', sticker: '🎭', imagen: '🖼️', logo: '💎',
+      premium: '👑', configuración: '⚙️', descargas: '📥', herramientas: '🛠️',
+      nsfw: '🔞', 'base de datos': '📁', audios: '🎵', freefire: '🔫', 
+      group: '👥', owner: '💻', otros: '🧩'
     };
 
     const menuBody = Object.entries(categorizedCommands).map(([title, cmds]) => {
-      const emoji = categoryEmojis[title.toLowerCase()] || '👟';
-      const list = [...cmds].map(cmd => `│  ◦ ${cmd}`).join('\n');
-      return `╭╾━━━━╼ 〔 ${emoji} ${title.toUpperCase()} 〕\n${list}\n╰╾━━━━╼ 〔 🛸 〕`;
+      const emoji = categoryEmojis[title.toLowerCase()] || '🔹';
+      const list = [...cmds].map(cmd => `┃  ⚡ ${cmd}`).join('\n');
+      return `╭╾━━╼ 〔 ${emoji} *${title.toUpperCase()}* 〕\n${list}\n╰╾━━╼ 〔 ⚡ 〕`;
     }).join('\n\n');
 
     const header = `
-${saludo} ${tagUsuario} 👋
+${saludo} ${tagUsuario} ✨
 
 ${borderTop}
-│  👟 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝕸𝖊𝖓𝖚́*
-│  👤 *𝖴𝗌𝗎𝖺𝗋𝗂𝗈:* ${userName}
-│  📈 *𝖭𝗂𝗏𝖾𝗅:* ${level}
-│  ✨ *𝖤𝗑𝗉:* ${exp - min}/${xp}
-│  🎫 *𝖳𝗂𝖼𝗄𝖾𝗍𝗌:* ${limit}
-│  ⏳ *𝖴𝗉𝗍𝗂𝗆𝖾:* ${uptime}
-│  👥 *𝖴𝗌𝗎𝖺𝗋𝗂𝗈𝗌:* ${totalUsers}
+┃  ⚡ *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 𝐌𝐄𝐍𝐔*
+┃  👤 *Usuario:* ${userName}
+┃  📈 *Nivel:* ${level}
+┃  ✨ *Exp:* ${exp - min}/${xp}
+┃  💎 *Diamantes:* ${limit}
+┃  ⏳ *Activo:* ${uptime}
+┃  👥 *Usuarios:* ${totalUsers}
 ${borderBottom}
 `.trim();
 
     const fullMenu = `${header}\n\n${menuBody}\n\n${menuFooter}`;
 
     await conn.sendMessage(m.chat, {
-      image: { url: imgVans },
+      image: { url: imgDidier },
       caption: fullMenu,
       mentions: [m.sender]
     }, { quoted: fkontak });
 
   } catch (e) {
     console.error('❌ Error en el menú:', e);
-    await conn.reply(m.chat, `⚠️ 𝖤𝗋𝗋𝗈𝗋 𝖺𝗅 𝖼𝖺𝗋𝗀𝖺𝗋 𝖾𝗅 𝗆𝖾𝗇𝗎́.`, m);
+    await conn.reply(m.chat, `⚠️ Ocurrió un error al cargar el menú.`, m);
   }
 };
 
-handler.command = ['menu', 'help', 'menú'];
+handler.help = ['menu']
+handler.tags = ['main']
+handler.command = ['menu', 'help', 'menú']
+
 export default handler;
