@@ -5,9 +5,9 @@ let handler = async (m, { conn, text, participants, isAdmin }) => {
 
   let users = participants.map(u => conn.decodeJid(u.id))
   let q = m.quoted ? m.quoted : m
-  let contenido = text || q.text || ''
+  let contenido = text || q.text || '📢 ¡Atención a todos!'
 
-  // Generamos el mensaje con la estructura de Business Verificado
+  // Generamos el mensaje con la estructura de Business Verificado para DIDIER BOT
   const msg = await generateWAMessageFromContent(m.chat, {
     extendedTextMessage: {
       text: contenido,
@@ -16,12 +16,12 @@ let handler = async (m, { conn, text, participants, isAdmin }) => {
         isForwarded: true,
         forwardingScore: 999,
         externalAdReply: {
-          title: 'WhatsApp Business ✅',
-          body: 'Hola Soy Vans bot',
-          thumbnailUrl: 'https://files.catbox.moe/dcp02s.jpg',
+          title: '𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 ✅',
+          body: 'Notificación Oficial del Grupo',
+          thumbnailUrl: 'https://files.catbox.moe/dpofx7.jpg',
           sourceUrl: 'https://www.whatsapp.com/',
           mediaType: 1,
-          renderLargerThumbnail: false // Esto hace que la foto se vea pequeña como reply
+          renderLargerThumbnail: false 
         }
       }
     }
@@ -29,7 +29,7 @@ let handler = async (m, { conn, text, participants, isAdmin }) => {
     quoted: {
       key: { remoteJid: 'status@broadcast', participant: '0@s.whatsapp.net' },
       message: { 
-        conversation: "Hola Soy Vans bot" 
+        conversation: "Hola Soy 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓" 
       }
     },
     userJid: conn.user.id 
