@@ -1,18 +1,20 @@
 let toM = a => '@' + a.split('@')[0]
+
 function handler(m, { groupMetadata }) {
-let ps = groupMetadata.participants.map(v => v.id)
-let a = ps.getRandom()
-let b
-do b = ps.getRandom()
-while (b === a)
+    let ps = groupMetadata.participants.map(v => v.id)
+    let a = ps.getRandom()
+    let b
+    do b = ps.getRandom()
+    while (b === a)
 
-m.reply(`👟 *Ｖａｎｓ  Ｂｏｔ* 👟
+    m.reply(`✨ *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓* ✨
 
-*${toM(a)},* _Busca la salita bebe que ya viene el vs_ 📌
+*${toM(a)},* ¡Busca la salita bebé que ya viene el VS! 🏁📌
 
-> 🛸 *𝖡𝗒 𝖤𝗅𝗂𝗎𝖽*`, null, {
-mentions: [a, b]
-})}
+> 🚀 *By Didier Developers*`, null, {
+        mentions: [a, b]
+    })
+}
 
 handler.help = ['donarsala']
 handler.tags = ['freefire']
