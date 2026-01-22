@@ -1,64 +1,17 @@
 import axios from 'axios'
 
-let handler = async (m, { conn, args}) => {
-  if (!args[0]) throw `
-╭╾━━━━╼ 〔 📋 〕 ╾━━━━╼╮
-│  👟 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝖱𝖾𝗍𝗈 𝟤𝟢𝗏𝗌𝟤𝟢*
-│
-│ ⏳ *ʜᴏʀᴀʀɪᴏ:*
-│ 🇲🇽 MÉXICO:
-│ 🇨🇴 COLOMBIA:
-│
-│ 🎮 *ᴍᴏᴅᴀʟɪᴅᴀᴅ:*
-│ 👥 *ᴊᴜɢᴀᴅᴏʀᴇs:*
-│
-│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 1:*
-│   👑 •
-│   🥷🏻 •
-│   🥷🏻 •
-│   🥷🏻 •
-│
-│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 2:*
-│   👑 •
-│   🥷🏻 •
-│   🥷🏻 •
-│   🥷🏻 •
-│
-│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 3:*
-│   👑 •
-│   🥷🏻 •
-│   🥷🏻 •
-│   🥷🏻 •
-│
-│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 4:*
-│   👑 •
-│   🥷🏻 •
-│   🥷🏻 •
-│   🥷🏻 •
-│
-│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 5:*
-│   👑 •
-│   🥷🏻 •
-│   🥷🏻 •
-│   🥷🏻 •
-│
-│ 🔄 *sᴜᴘʟᴇɴᴛᴇs:*
-│   🥷🏻 •
-│   🥷🏻 •
-╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯
-*𝖡𝗒 𝖤𝗅𝗂𝗎𝖽 • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍*
-`
+let handler = async (m, { conn, args, usedPrefix, command }) => {
+  if (!args[0]) throw `✨ *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*\n\n⚠️ Por favor, ingresa el horario del reto.\n*Ejemplo:* ${usedPrefix + command} 9:00 PM`
 
   // Mensaje citado tipo Izumi con imagen y título aleatorio
   const titulos = [
-    "👟 VANS BOT | ELITE 20x20",
-    "🛸 ELIUD SYSTEM | GUERRA DE CLANES",
-    "🔥 VANS OFF THE WALL | MAX BATTLE"
+    "⚡ 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 | ELITE 20x20",
+    "🚀 DIDIER SYSTEM | GUERRA DE CLANES",
+    "✨ DIDIER DEVELOPERS | MAX BATTLE"
   ]
   const imagenes = [
-    "https://iili.io/FKVDVAN.jpg",
-    "https://iili.io/FKVbUrJ.jpg",
-    "https://iili.io/HZOHhlx.jpg"
+    "https://files.catbox.moe/1j784p.jpg",
+    "https://files.catbox.moe/xr2m6u.jpg"
   ]
 
   const titulo = titulos[Math.floor(Math.random() * titulos.length)]
@@ -69,7 +22,6 @@ let handler = async (m, { conn, args}) => {
     const res = await axios.get(imagen, { responseType: 'arraybuffer'})
     thumbBuffer = Buffer.from(res.data)
   } catch (e) {
-    console.log("Error cargando imagen:", e)
     thumbBuffer = Buffer.alloc(0)
   }
 
@@ -83,7 +35,7 @@ let handler = async (m, { conn, args}) => {
       orderMessage: {
         itemCount: 20,
         message: titulo,
-        footerText: "𝖵𝖺𝗇𝗌 𝖡𝗈𝗍 • 𝖡𝗒 𝖤𝗅𝗂𝗎𝖽",
+        footerText: "𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 • 𝐁𝐲 𝐃𝐢𝐝𝐢𝐞𝐫",
         thumbnail: thumbBuffer,
         surface: 2,
         sellerJid: "0@s.whatsapp.net"
@@ -92,8 +44,52 @@ let handler = async (m, { conn, args}) => {
   }
 
   await conn.sendMessage(m.chat, {
-    image: { url: 'https://cdn.russellxz.click/16b3faeb.jpeg'},
-    caption: `╭╾━━━━╼ 〔 👟 〕 ╾━━━━╼╮\n│  💢 *𝟤𝟢 𝖵𝖲 𝟤𝟢 | 𝖁𝖆𝖓𝖘 𝕭𝖔𝖙*\n│\n│ ⏳ *ʜᴏʀᴀʀɪᴏ:*\n│ 🇲🇽 MÉXICO: ${args[0]}\n│ 🇨🇴 COLOMBIA: ${args[0]}\n│\n│ 🎮 *ᴍᴏᴅᴀʟɪᴅᴀᴅ:*\n│ 👥 *ᴊᴜɢᴀᴅᴏʀᴇs:*\n│\n│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 1:*\n│   👑 • \n│   🥷🏻 • \n│   🥷🏻 • \n│   🥷🏻 • \n│\n│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 2:*\n│   👑 • \n│   🥷🏻 • \n│   🥷🏻 • \n│   🥷🏻 • \n│\n│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 3:*\n│   👑 • \n│   🥷🏻 • \n│   🥷🏻 • \n│   🥷🏻 • \n│\n│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 4:*\n│   👑 • \n│   🥷🏻 • \n│   🥷🏻 • \n│   🥷🏻 • \n│\n│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 5:*\n│   👑 • \n│   🥷🏻 • \n│   🥷🏻 • \n│   🥷🏻 • \n│\n│ 🔄 *sᴜᴘʟᴇɴᴛᴇs:*\n│   🥷🏻 • \n│   🥷🏻 • \n╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯\n*𝖡𝗒 𝖤𝗅𝗂𝗎𝖽 • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍*`,
+    image: { url: 'https://files.catbox.moe/1j784p.jpg'},
+    caption: `╭╾━━━━╼ 〔 ⚡ 〕 ╾━━━━╼╮
+┃  💢 *𝟐𝟎 𝐕𝐒 𝟐𝟎 | 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*
+┃
+┃ ⏳ *ʜᴏʀᴀʀɪᴏ:*
+┃ 🇲🇽 MÉXICO: ${args[0]}
+┃ 🇨🇴 COLOMBIA: ${args[0]}
+┃
+┃ 🎮 *ᴍᴏᴅᴀʟɪᴅᴀᴅ:*
+┃ 👥 *ᴊᴜɢᴀᴅᴏʀᴇs:*
+┃
+┃ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 1:*
+┃   👑 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃
+┃ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 2:*
+┃   👑 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃
+┃ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 3:*
+┃   👑 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃
+┃ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 4:*
+┃   👑 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃
+┃ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 5:*
+┃   👑 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃
+┃ 🔄 *sᴜᴘʟᴇɴᴛᴇs:*
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+╰╾━━━━╼ 〔 🚀 〕 ╾━━━━╼╯
+*By Didier Developers • 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*`,
     mentions: []
   }, { quoted: izumi})
 }
