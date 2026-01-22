@@ -3,65 +3,63 @@ import fetch from 'node-fetch'
 import axios from 'axios'
 
 let handler = async (m, { conn, args, command, usedPrefix}) => {
-  if (!args[0]) throw `
-╭╾━━━━╼ 〔 📋 〕 ╾━━━━╼╮
-│  👟 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝖱𝖾𝗍𝗈 𝟦𝗏𝗌𝟦*
-│
-│ ⏳ *ʜᴏʀᴀʀɪᴏ:*
-│ 🇲🇽 MÉXICO:
-│ 🇨🇴 COLOMBIA:
-│
-│ 🎮 *ᴍᴏᴅᴀʟɪᴅᴀᴅ:*
-│ 👥 *ᴊᴜɢᴀᴅᴏʀᴇs:*
-│
-│ 🏆 *ᴇsᴄᴜᴀᴅʀᴀ 1:*
-│   👑 •
-│   🥷🏻 •
-│   🥷🏻 •
-│   🥷🏻 •
-│
-│ 🧱 *sᴜᴘʟᴇɴᴛᴇs:*
-│   🥷🏻 •
-│   🥷🏻 •
-╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯
-*𝖡𝗒 𝖤𝗅𝗂𝗎𝖽 • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍*
-`
+  if (!args[0]) throw `✨ *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*\n\n⚠️ Por favor, ingresa el horario del reto.\n*Ejemplo:* ${usedPrefix + command} 7:00 PM`
 
   const fkontak = {
     key: {
       participant: '0@s.whatsapp.net',
       remoteJid: 'status@broadcast',
       fromMe: false,
-      id: 'VansMenu'
+      id: 'DidierMenu'
     },
     message: {
       locationMessage: {
-        name: '🛸 INVOCACIÓN | 𝖁𝖆𝖓𝖘 𝕭𝖔𝖙',
+        name: '⚡ INVOCACIÓN | 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓',
         jpegThumbnail: await (await fetch('https://files.catbox.moe/1j784p.jpg')).buffer(),
         vcard:
           'BEGIN:VCARD\n' +
           'VERSION:3.0\n' +
-          'N:;Eliud;;;\n' +
-          'FN:Eliud\n' +
-          'ORG:Vans Developers\n' +
+          'N:;Didier;;;\n' +
+          'FN:Didier\n' +
+          'ORG:Didier Developers\n' +
           'TITLE:\n' +
           'item1.TEL;waid=19709001746:+1 (970) 900-1746\n' +
-          'item1.X-ABLabel:Eliud\n' +
-          'X-WA-BIZ-DESCRIPTION:Reto organizado vía 𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 👟\n' +
-          'X-WA-BIZ-NAME:Eliud\n' +
+          'item1.X-ABLabel:Didier\n' +
+          'X-WA-BIZ-DESCRIPTION:Reto organizado vía 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 ✨\n' +
+          'X-WA-BIZ-NAME:Didier\n' +
           'END:VCARD'
       }
     }
   }
 
   await conn.sendMessage(m.chat, {
-    text: '🎯 *¡Reto 4vs4 detectado por Vans Bot!*',
+    text: '🎯 *¡Reto 4vs4 detectado por Didier Bot!*',
   }, { quoted: fkontak })
 
   // Mensaje visual principal
   await conn.sendMessage(m.chat, {
-    image: { url: 'https://cdn.russellxz.click/16b3faeb.jpeg'},
-    caption: `╭╾━━━━╼ 〔 👟 〕 ╾━━━━╼╮\n│  🔥 *𝟦 𝖵𝖲 𝟦 | 𝖁𝖆𝖓𝖘 𝕭𝖔𝖙*\n│\n│ ⏳ *ʜᴏʀᴀʀɪᴏ:*\n│ 🇲🇽 MÉXICO: ${args[0]}\n│ 🇨🇴 COLOMBIA: ${args[0]}\n│\n│ 🎮 *ᴍᴏᴅᴀʟɪᴅᴀᴅ:*\n│ 👥 *ᴊᴜɢᴀᴅᴏʀᴇs:*\n│\n│ 🏆 *ᴇsᴄᴜᴀᴅʀᴀ 1:*\n│   👑 • \n│   🥷🏻 • \n│   🥷🏻 • \n│   🥷🏻 • \n│\n│ 🧱 *sᴜᴘʟᴇɴᴛᴇs:*\n│   🥷🏻 • \n│   🥷🏻 • \n╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯\n*𝖡𝗒 𝖤𝗅𝗂𝗎𝖽 • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍*`,
+    image: { url: 'https://files.catbox.moe/1j784p.jpg'},
+    caption: `╭╾━━━━╼ 〔 ⚡ 〕 ╾━━━━╼╮
+┃  🔥 *𝟒 𝐕𝐒 𝟒 | 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*
+┃
+┃ ⏳ *ʜᴏʀᴀʀɪᴏ:*
+┃ 🇲🇽 MÉXICO: ${args[0]}
+┃ 🇨🇴 COLOMBIA: ${args[0]}
+┃
+┃ 🎮 *ᴍᴏᴅᴀʟɪᴅᴀᴅ:*
+┃ 👥 *ᴊᴜɢᴀᴅᴏʀᴇs:*
+┃
+┃ 🏆 *ᴇsᴄᴜᴀᴅʀᴀ 1:*
+┃   👑 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃
+┃ 🧱 *sᴜᴘʟᴇɴᴛᴇs:*
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+╰╾━━━━╼ 〔 🚀 〕 ╾━━━━╼╯
+*By Didier Developers • 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*`,
     mentions: []
   }, { quoted: fkontak })
 }
