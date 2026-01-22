@@ -106,21 +106,21 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
 
     default:
       if (!/[01]/.test(command)) return m.reply(`
-🏎️💨 ᴠᴀɴs ʙᴏᴛ - ᴄᴏɴᴛʀᴏʟ ᴄᴇɴᴛᴇʀ
+✨ 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 - 𝐂𝐄𝐍𝐓𝐑𝐎 𝐃𝐄 𝐂𝐎𝐍𝐓𝐑𝐎𝐋
 ──────────────────────
-🚘 *Ajustes de Velocidad y Seguridad*
+⚙️ *Ajustes de Sistema y Seguridad*
 
-🏁 *[welcome]* ⮕ Bienvenida
-🏁 *[nsfw]* ⮕ Modo Adulto
-🏁 *[antilink]* ⮕ Bloqueo de Links
-🏁 *[antilag]* ⮕ Optimizar RAM
-🏁 *[antiarabes]* ⮕ Filtro Regional
-🏁 *[autoleer]* ⮕ Lectura Auto
-🏁 *[restrict]* ⮕ Restricciones
-🏁 *[document]* ⮕ Modo Documento
-🏁 *[modoadmin]* ⮕ Solo Staff
-🏁 *[audios]* ⮕ Notas de Voz
-🏁 *[subbots]* ⮕ Sistema JadiBot
+⚡ *[welcome]* ⮕ Bienvenida
+⚡ *[nsfw]* ⮕ Modo Adulto
+⚡ *[antilink]* ⮕ Bloqueo de Links
+⚡ *[antilag]* ⮕ Optimizar RAM
+⚡ *[antiarabes]* ⮕ Filtro Regional
+⚡ *[autoleer]* ⮕ Lectura Auto
+⚡ *[restrict]* ⮕ Restricciones
+⚡ *[document]* ⮕ Modo Documento
+⚡ *[modoadmin]* ⮕ Solo Staff
+⚡ *[audios]* ⮕ Notas de Voz
+⚡ *[subbots]* ⮕ Sistema JadiBot
 
 🛠️ *Uso:* ${usedPrefix + command} welcome
 ──────────────────────`.trim())
@@ -131,7 +131,7 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
   let scopeText = isAll ? 'ＴＯＤＯ ＥＬ ＢＯＴ' : isUser ? 'ＵＳＵＡＲＩＯ' : 'ＥＳＴＥ ＣＨＡＴ';
 
   let confirm = `
-🚘 *V A N S  B O T  M D* 🚘
+✨ *𝐃 𝐈 𝐃 𝐈 Ｅ 𝐑  𝐁 Ｏ Ｔ* ✨
 ──────────────────────
 🚦 *ESTADO DE LA FUNCIÓN*
 
@@ -139,7 +139,7 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
 ⚡ *Estado:* ${statusText}
 📍 *Ruta:* ${scopeText}
 
-💨 *¡Motor configurado correctamente!*
+🚀 *¡Configuración aplicada con éxito!*
 ──────────────────────`.trim()
 
   m.reply(confirm)
