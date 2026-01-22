@@ -1,44 +1,44 @@
 const handler = async (m, { conn }) => {
-  // Nueva Imagen de Vans Bot
-  const img = 'https://files.catbox.moe/qqaj1o.jpg' 
+  // Imagen actualizada para Didier Bot
+  const img = 'https://files.catbox.moe/dpofx7.jpg' 
 
   const texto = `
-╭╾━━━━╼ 〔 🎧 〕 ╾━━━━╼╮
-│  👟 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝕬𝖚𝖉𝖎𝖔𝖘*
-│
-│  🛸 *𝖲𝗈𝗎𝗇𝖽𝖻𝗈𝖺𝗋𝖽 𝖲𝗒𝗌𝗍𝖾𝗆*
-│  🛹 *𝖡𝗒 𝖤𝗅𝗂𝗎𝖽*
-│
-│  *ᴍᴇᴍᴇs ʏ ғʀᴀsᴇs:*
-│  ◦ _El Pepe, Basado, Potasio_
-│  ◦ _Eso va ser epico papus_
-│  ◦ _Se estan riendiendo de mi_
-│  ◦ _Diagnosticado con Gay_
-│  ◦ _Usted es feo, Ara Ara_
-│
-│  *ʀᴇᴀᴄᴄɪᴏɴᴇs:*
-│  ◦ _WTF, OMG, ZZZZ, Joder_
-│  ◦ _Nadie te pregunto_
-│  ◦ _Que onda, Mmmm, Hey_
-│  ◦ _Bien pensado Woody_
-│
-│  *ᴀᴜᴅɪᴏs ᴄʟásɪᴄᴏs:*
-│  ◦ _Chambear, Mudo, Onichan_
-│  ◦ _Siuuu, Yamete, Pikachú_
-│  ◦ _Ma ma masivo, Taka taka_
-│  ◦ _Tunometecabrasaramambiche_
-│
-│  *sᴀʟᴜᴅᴏs:*
-│  ◦ _Buenos días, Buenas noches_
-│  ◦ _Bienvenido wey, Hola_
-│  ◦ _Feliz cumpleaños_
-│
-│  ⚠️ *𝖠𝖽𝗏𝖾𝗋𝗍𝖾𝗇𝖼𝗂𝖺:*
-│  _Escribe el nombre exacto_
-│  _del audio para reproducirlo._
-│
-╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯
-*𝖡𝗒 𝖤𝗅𝗂𝗎𝖽 • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍*`.trim()
+╭╾━━━━╼ 〔 🎵 〕 ╾━━━━╼╮
+┃  ⚡ *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 𝐀𝐔𝐃𝐈𝐎𝐒*
+┃
+┃  🚀 *𝐒𝐨𝐮𝐧𝐝𝐛𝐨𝐚𝐫𝐝 𝐒𝐲𝐬𝐭𝐞𝐦*
+┃  ✨ *𝐁𝐲 𝐃𝐢𝐝𝐢𝐞𝐫 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫𝐬*
+┃
+┃  *ᴍᴇᴍᴇs ʏ ғʀᴀsᴇs:*
+┃  ◦ _El Pepe, Basado, Potasio_
+┃  ◦ _Eso va ser epico papus_
+┃  ◦ _Se estan riendiendo de mi_
+┃  ◦ _Diagnosticado con Gay_
+┃  ◦ _Usted es feo, Ara Ara_
+┃
+┃  *ʀᴇᴀᴄᴄɪᴏɴᴇs:*
+┃  ◦ _WTF, OMG, ZZZZ, Joder_
+┃  ◦ _Nadie te pregunto_
+┃  ◦ _Que onda, Mmmm, Hey_
+┃  ◦ _Bien pensado Woody_
+┃
+┃  *ᴀᴜᴅɪᴏs ᴄʟásɪᴄᴏs:*
+┃  ◦ _Chambear, Mudo, Onichan_
+┃  ◦ _Siuuu, Yamete, Pikachú_
+┃  ◦ _Ma ma masivo, Taka taka_
+┃  ◦ _Tunometecabrasaramambiche_
+┃
+┃  *sᴀʟᴜᴅᴏs:*
+┃  ◦ _Buenos días, Buenas noches_
+┃  ◦ _Bienvenido wey, Hola_
+┃  ◦ _Feliz cumpleaños_
+┃
+┃  ⚠️ *𝐀𝐝𝐯𝐞𝐫𝐭𝐞𝐧𝐜𝐢𝐚:*
+┃  _Escribe el nombre exacto_
+┃  _del audio para reproducirlo._
+┃
+╰╾━━━━╼ 〔 🚀 〕 ╾━━━━╼╯
+*By Didier Developers • 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*`.trim()
 
   await conn.sendMessage(m.chat, { 
     image: { url: img }, 
