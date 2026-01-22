@@ -29,14 +29,14 @@ function verify() {
 verify();
 
 // Diseño para ""
-say('Eliud', {
+say('DiDier', {
   font: 'block', // Estilo 'block' para un diseño fuerte
   align: 'center',
   colors: ['red', 'white'], // Colores que recuerdan al Sharingan
   background: 'black' // Fondo oscuro para resaltar el texto
 });
 
-say(`Developed By • ELIUD`, {
+say(`Developed By • DiDier`, {
   font: 'console',
   align: 'center',
   colors: ['magenta']
