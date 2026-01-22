@@ -1,54 +1,29 @@
 import fetch from 'node-fetch'
 import axios from 'axios'
 
-let handler = async (m, { conn, args}) => {
-  if (!args[0]) throw `
-╭╾━━━━╼ 〔 📋 〕 ╾━━━━╼╮
-│  👟 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝖱𝖾𝗍𝗈 𝟪𝗏𝗌𝟪*
-│
-│ ⏳ *ʜᴏʀᴀʀɪᴏ:*
-│ 🇲🇽 MÉXICO: 
-│ 🇨🇴 COLOMBIA: 
-│
-│ 🎮 *ᴍᴏᴅᴀʟɪᴅᴀᴅ:*
-│ 👥 *ᴊᴜɢᴀᴅᴏʀᴇs:* 8 VS 8
-│
-│ 🏆 *ᴇsᴄᴜᴀᴅʀᴀ ᴀ:*
-│    👑 • 
-│    ⚡ • 
-│    ⚡ • 
-│    ⚡ • 
-│
-│ 🏆 *ᴇsᴄᴜᴀᴅʀᴀ ʙ:*
-│    👑 • 
-│    ⚡ • 
-│    ⚡ • 
-│    ⚡ • 
-│
-│ 🔄 *ʀᴇsᴇʀᴠᴀs:*
-│    👤 • 
-│    👤 • 
-│
-│ 💬 *𝖴𝗌𝖺:* .8vs8 [𝗁𝗈𝗋𝖺]
-╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯
-`
+let handler = async (m, { conn, args, usedPrefix, command }) => {
+  if (!args[0]) throw `✨ *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*\n\n⚠️ Por favor, ingresa el horario del reto.\n*Ejemplo:* ${usedPrefix + command} 6:00 PM`
 
   const textos = [
-    "👟 𝖁𝖆𝖓𝖘 𝕭𝖔𝖙: 𝖣𝗈𝗆𝗂𝗇𝗂𝗈 𝖳𝗈𝗍𝖺𝗅",
-    "⚔️ 𝖣𝗎𝖾𝗅𝗈 𝖽𝖾 𝖤𝗅𝗂𝗍𝖾 𝖠𝖼𝗍𝗂𝗏𝖺𝖽𝗈",
-    "🛸 𝖲𝗒𝗌𝗍𝖾𝗆 𝖤𝗅𝗂𝗎𝖽: 𝖢𝗈𝗇𝖿𝗅𝗂𝖼𝗍𝗈 𝟪𝗏𝗌𝟪"
+    "⚡ 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓: Dominio Total",
+    "⚔️ Duelo de Élite Activado",
+    "🚀 Didier System: Conflicto 8vs8"
   ]
+  
   const imagenes = [
-    "https://iili.io/FKVDVAN.jpg",
-    "https://iili.io/FKVbUrJ.jpg",
-    "https://iili.io/HZOHhlx.jpg"
+    "https://files.catbox.moe/1j784p.jpg",
+    "https://files.catbox.moe/xr2m6u.jpg"
   ]
 
   const titulo = textos[Math.floor(Math.random() * textos.length)]
   const imagen = imagenes[Math.floor(Math.random() * imagenes.length)]
-  const thumbBuffer = Buffer.from(
-    (await axios.get(imagen, { responseType: 'arraybuffer'})).data
-  )
+  
+  let thumbBuffer
+  try {
+    thumbBuffer = (await axios.get(imagen, { responseType: 'arraybuffer' })).data
+  } catch {
+    thumbBuffer = Buffer.alloc(0)
+  }
 
   const kingMessage = {
     key: {
@@ -59,46 +34,47 @@ let handler = async (m, { conn, args}) => {
     message: {
       orderMessage: {
         itemCount: 2026,
+        status: 1,
         message: titulo,
-        footerText: "𝖵𝖺𝗇𝗌 𝖡𝗈𝗍 • 𝖡𝗒 𝖤𝗅𝗂𝗎𝖽",
+        footerText: "𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 • 𝐁𝐲 𝐃𝐢𝐝𝐢𝐞𝐫",
         thumbnail: thumbBuffer,
-        surface: 2,
+        surface: 1,
         sellerJid: "0@s.whatsapp.net"
       }
     }
   }
 
   const caption = `
-╭╾━━━━╼ 〔 👟 〕 ╾━━━━╼╮
-│
-│ ⏳ *ʜᴏʀᴀʀɪᴏs:*
-│ 🇲🇽 MÉXICO: ${args[0]}
-│ 🇨🇴 COLOMBIA: ${args[0]}
-│
-│ 🎮 *ᴍᴏᴅᴀʟɪᴅᴀᴅ:*
-│ 👥 *ᴊᴜɢᴀᴅᴏʀᴇs:* 8 VS 8
-│
-│ 🔱 *ᴇsᴄᴜᴀᴅʀᴀ 1:*
-│    👑 • 
-│    ⚔️ • 
-│    ⚔️ • 
-│    ⚔️ • 
-│
-│ 🔱 *ᴇsᴄᴜᴀᴅʀᴀ 2:*
-│    👑 • 
-│    ⚔️ • 
-│    ⚔️ • 
-│    ⚔️ • 
-│
-│ 🚀 *sᴜᴘʟᴇɴᴛᴇs:*
-│    👾 • 
-│    👾 • 
-│
-╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯
-*𝖡𝗒 𝖤𝗅𝗂𝗎𝖽 • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍*`.trim()
+╭╾━━━━╼ 〔 ⚡ 〕 ╾━━━━╼╮
+┃
+┃ ⏳ *ʜᴏʀᴀʀɪᴏs:*
+┃ 🇲🇽 MÉXICO: ${args[0]}
+┃ 🇨🇴 COLOMBIA: ${args[0]}
+┃
+┃ 🎮 *ᴍᴏᴅᴀʟɪᴅᴀᴅ:*
+┃ 👥 *ᴊᴜɢᴀᴅᴏʀᴇs:* 8 VS 8
+┃
+┃ 🔱 *ᴇsᴄᴜᴀᴅʀᴀ 1:*
+┃    👑 • 
+┃    ⚔️ • 
+┃    ⚔️ • 
+┃    ⚔️ • 
+┃
+┃ 🔱 *ᴇsᴄᴜᴀᴅʀᴀ 2:*
+┃    👑 • 
+┃    ⚔️ • 
+┃    ⚔️ • 
+┃    ⚔️ • 
+┃
+┃ 🚀 *sᴜᴘʟᴇɴᴛᴇs:*
+┃    👾 • 
+┃    👾 • 
+┃
+╰╾━━━━╼ 〔 ✨ 〕 ╾━━━━╼╯
+*By Didier Developers • 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*`.trim()
 
   await conn.sendMessage(m.chat, {
-    image: { url: 'https://cdn.russellxz.click/16b3faeb.jpeg'},
+    image: { url: 'https://files.catbox.moe/1j784p.jpg' },
     caption: caption,
     mentions: []
   }, { quoted: kingMessage })
@@ -108,6 +84,5 @@ handler.help = ['8vs8']
 handler.tags = ['freefire']
 handler.command = /^(vs8|8vs8|masc8)$/i
 handler.group = true
-handler.admin = false
 
 export default handler
