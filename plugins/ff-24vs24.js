@@ -1,69 +1,16 @@
 import axios from 'axios'
 
-let handler = async (m, { conn, args}) => {
-  if (!args[0]) throw `
-╭╾━━━━╼ 〔 📋 〕 ╾━━━━╼╮
-│  👟 *𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 𝖱𝖾𝗍𝗈 𝟤𝟦𝗏𝗌𝟤𝟦*
-│
-│ ⏳ *ʜᴏʀᴀʀɪᴏ:*
-│ 🇲🇽 MÉXICO:
-│ 🇨🇴 COLOMBIA:
-│
-│ 🎮 *ᴍᴏᴅᴀʟɪᴅᴀᴅ:*
-│ 👥 *ᴊᴜɢᴀᴅᴏʀᴇs:*
-│
-│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 1:*
-│   👑 •
-│   🥷🏻 •
-│   🥷🏻 •
-│   🥷🏻 •
-│
-│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 2:*
-│   👑 •
-│   🥷🏻 •
-│   🥷🏻 •
-│   🥷🏻 •
-│
-│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 3:*
-│   👑 •
-│   🥷🏻 •
-│   🥷🏻 •
-│   🥷🏻 •
-│
-│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 4:*
-│   👑 •
-│   🥷🏻 •
-│   🥷🏻 •
-│   🥷🏻 •
-│
-│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 5:*
-│   👑 •
-│   🥷🏻 •
-│   🥷🏻 •
-│   🥷🏻 •
-│
-│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 6:*
-│   👑 •
-│   🥷🏻 •
-│   🥷🏻 •
-│   🥷🏻 •
-│
-│ 🔄 *sᴜᴘʟᴇɴᴛᴇs:*
-│   🥷🏻 •
-│   🥷🏻 •
-╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯
-*𝖡𝗒 𝖤𝗅𝗂𝗎𝖽 • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍*
-`
+let handler = async (m, { conn, args, usedPrefix, command }) => {
+  if (!args[0]) throw `✨ *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*\n\n⚠️ Por favor, ingresa el horario del reto.\n*Ejemplo:* ${usedPrefix + command} 10:00 PM`
 
   const encabezados = [
-    "👟 VANS BOT | SUPREME 24x24",
-    "🛸 ELIUD SYSTEM | MEGA BATTLE",
-    "🔥 VANS OFF THE WALL | 24 VS 24"
+    "⚡ 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 | SUPREME 24x24",
+    "🚀 DIDIER SYSTEM | MEGA BATTLE",
+    "✨ DIDIER DEVELOPERS | 24 VS 24"
   ]
   const imagenes = [
-    "https://iili.io/FKVDVAN.jpg",
-    "https://iili.io/FKVbUrJ.jpg",
-    "https://iili.io/HZOHhlx.jpg"
+    "https://files.catbox.moe/1j784p.jpg",
+    "https://files.catbox.moe/xr2m6u.jpg"
   ]
 
   const titulo = encabezados[Math.floor(Math.random() * encabezados.length)]
@@ -87,7 +34,7 @@ let handler = async (m, { conn, args}) => {
       orderMessage: {
         itemCount: 24,
         message: titulo,
-        footerText: "𝖵𝖺𝗇𝗌 𝖡𝗈𝗍 • 𝖡𝗒 𝖤𝗅𝗂𝗎𝖽",
+        footerText: "𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 • 𝐁𝐲 𝐃𝐢𝐝𝐢𝐞𝐫",
         thumbnail: thumbBuffer,
         surface: 2,
         sellerJid: "0@s.whatsapp.net"
@@ -96,8 +43,58 @@ let handler = async (m, { conn, args}) => {
   }
 
   await conn.sendMessage(m.chat, {
-    image: { url: 'https://cdn.russellxz.click/16b3faeb.jpeg'},
-    caption: `╭╾━━━━╼ 〔 👟 〕 ╾━━━━╼╮\n│  🔥 *𝟤𝟦 𝖵𝖲 𝟤𝟦 | 𝖁𝖆𝖓𝖘 𝕭𝖔𝖙*\n│\n│ ⏳ *ʜᴏʀᴀʀɪᴏ:*\n│ 🇲🇽 MÉXICO: ${args[0]}\n│ 🇨🇴 COLOMBIA: ${args[0]}\n│\n│ 🎮 *ᴍᴏᴅᴀʟɪᴅᴀᴅ:*\n│ 👥 *ᴊᴜɢᴀᴅᴏʀᴇs:*\n│\n│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 1:*\n│   👑 • \n│   🥷🏻 • \n│   🥷🏻 • \n│   🥷🏻 • \n│\n│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 2:*\n│   👑 • \n│   🥷🏻 • \n│   🥷🏻 • \n│   🥷🏻 • \n│\n│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 3:*\n│   👑 • \n│   🥷🏻 • \n│   🥷🏻 • \n│   🥷🏻 • \n│\n│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 4:*\n│   👑 • \n│   🥷🏻 • \n│   🥷🏻 • \n│   🥷🏻 • \n│\n│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 5:*\n│   👑 • \n│   🥷🏻 • \n│   🥷🏻 • \n│   🥷🏻 • \n│\n│ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 6:*\n│   👑 • \n│   🥷🏻 • \n│   🥷🏻 • \n│   🥷🏻 • \n│\n│ 🔄 *sᴜᴘʟᴇɴᴛᴇs:*\n│   🥷🏻 • \n│   🥷🏻 • \n╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯\n*𝖡𝗒 𝖤𝗅𝗂𝗎𝖽 • 𝖵𝖺𝗇𝗌 𝖡𝗈𝗍*`,
+    image: { url: 'https://files.catbox.moe/1j784p.jpg'},
+    caption: `╭╾━━━━╼ 〔 ⚡ 〕 ╾━━━━╼╮
+┃  🔥 *𝟐𝟒 𝐕𝐒 𝟐𝟒 | 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*
+┃
+┃ ⏳ *ʜᴏʀᴀʀɪᴏ:*
+┃ 🇲🇽 MÉXICO: ${args[0]}
+┃ 🇨🇴 COLOMBIA: ${args[0]}
+┃
+┃ 🎮 *ᴍᴏᴅᴀʟɪᴅᴀᴅ:*
+┃ 👥 *ᴊᴜɢᴀᴅᴏʀᴇs:*
+┃
+┃ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 1:*
+┃   👑 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃
+┃ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 2:*
+┃   👑 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃
+┃ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 3:*
+┃   👑 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃
+┃ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 4:*
+┃   👑 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃
+┃ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 5:*
+┃   👑 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃
+┃ 🥷 *ᴇsᴄᴜᴀᴅʀᴀ 6:*
+┃   👑 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+┃
+┃ 🔄 *sᴜᴘʟᴇɴᴛᴇs:*
+┃   🥷🏻 • 
+┃   🥷🏻 • 
+╰╾━━━━╼ 〔 🚀 〕 ╾━━━━╼╯
+*By Didier Developers • 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*`,
     mentions: []
   }, { quoted: izumi})
 }
