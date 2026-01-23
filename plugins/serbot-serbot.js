@@ -65,7 +65,6 @@ let rtx2 = `
 // Imagen actualizada para Didier Bot
 let imagenUrl = 'https://files.catbox.moe/dpofx7.jpg';
 
-
 let emoji2 = '🍁';
 
 const __filename = fileURLToPath(import.meta.url)
