@@ -18,51 +18,45 @@ import { startSub, checkSubBots } from '../lib/resetsb.js';
   setInterval(() => {
     checkSubBots();
   }, 30000);
-
-// Créditos y Base
 let crm1 = "Y2QgcGx1Z2lucy"
 let crm2 = "A7IG1kNXN1b"
 let crm3 = "SBpbmZvLWRvbmFyLmpz"
 let crm4 = "IF9hdXRvcmVzcG9uZGVyLmpzIGluZm8tYm90Lmpz"
-
+let drm1 = ""
+let drm2 = ""
 let rtx = `
-╭╾━━━━╼ 〔 ⚡ 〕 ╾━━━━╼╮
-┃  ✨ *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 - 𝐐𝐑*
-┃
-┃ 🔗 *Conexión Sub-Bot (QR)*
-┃
-┃ Escanea este código QR para
-┃ convertirte en un *Sub-Bot*
-┃ oficial de esta sesión.
-┃
-┃ 🚀 *Pasos a seguir:*
-┃ ➤ ① Abre WhatsApp en otro cel o PC
-┃ ➤ ② Ve a *Dispositivos vinculados*
-┃ ➤ ③ Escanea el código QR
-┃
-┃ ⏳ *Expira en 45 segundos*
-┃ ¡Potencia tu grupo ahora!
-╰╾━━━━╼ 〔 🚀 〕 ╾━━━━╼╯
-`;
+╔═══『  𝚀𝚁 』═══╗
 
+🔗 *Conexión Sub-Bot Temporal (QR)*
+
+📱 Escanea este código QR desde otro dispositivo
+para vincularte como *Sub-Bot Temporal* en esta sesión.
+
+🧭 Pasos ninja:
+➤ ① Abre WhatsApp en otro celular o PC
+➤ ② Ve a *Dispositivos vinculados*
+➤ ③ Escanea el código QR
+
+⏳ *Este código expira en 54 segundos*
+¡Muévete como el viento, shinobi!
+`;
 let rtx2 = `
-╭╾━━━━╼ 〔 🔐 〕 ╾━━━━╼╮
-┃  ✨ *𝐂𝐎𝐃𝐈𝐆𝐎 𝐃𝐄 𝐕𝐈𝐍𝐂𝐔𝐋𝐀𝐂𝐈𝐎𝐍*
-┃
-┃ 📲 Usa este código de 8 dígitos
-┃ para vincularte a *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*.
-┃
-┃ 🚀 *Instrucciones:*
-┃ ➤ ① Ve a *Dispositivos vinculados*
-┃ ➤ ② Selecciona *Vincular con número*
-┃ ➤ ③ Ingresa el código generado
-┃
-┃ ⚠️ *Nota:* Si ya tienes otra sesión,
-┃ ciérrala para evitar conflictos.
-╰╾━━━━╼ 〔 ⚡ 〕 ╾━━━━╼╯
+『 𝙲𝙾𝙳𝙸𝙶𝙾 𝟾 𝙳𝙸𝙶𝙸𝚃𝙾𝚂 』
+
+🔐 *Conexión Sub-Bot Temporal (Código)*
+
+📲 Usa este código de 8 dígitos para vincularte
+como *Sub-Bot Temporal* en esta sesión.
+
+🧭 Pasos A Seguir:
+➤ ① Abre WhatsApp y ve a *Dispositivos vinculados*
+➤ ② Selecciona *Vincular con número de teléfono*
+➤ ③ Ingresa el código proporcionado
+
+⚠ Si ya estás conectado en otra sesión,
+se recomienda cerrarla para evitar errores o bloqueos.
 `;
 
-// Imagen actualizada para Didier Bot
 let imagenUrl = 'https://files.catbox.moe/dpofx7.jpg';
 
 let emoji2 = '🍁';
