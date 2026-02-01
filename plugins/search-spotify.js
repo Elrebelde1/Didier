@@ -1,34 +1,51 @@
-/*
-- By WillZek 
-- https://github.com/WillZek
-- 🌃 Moon Force Team
-- https://whatsapp.com/channel/0029Vb4Dnh611ulGUbu7Xg1q
-*/
+import fetch from 'node-fetch'
 
-// SPOTIFY - DOWNLOADER 🌟
+const handler = async (m, { conn, args, command, usedPrefix }) => {
 
-import fetch from 'node-fetch';
+if (!args[0]) return m.reply(`🌙 INGRESE UN ENLACE O NOMBRE DE SPOTIFY\n> *Ejemplo:* ${usedPrefix + command} Lupita`)
 
-let MF = async (m, { conn, args, command, usedPrefix }) => {
+try {
+let query = args.join(" ")
+let searchResponse = await fetch(`https://sylphy.xyz/search/spotify?q=${encodeURIComponent(query)}&api_key=sylphy-6f150d`)
+let searchData = await searchResponse.json()
 
-if (!args[0]) return m.reply(`🌙 INGRESE UN Link De Spotify\n> *Ejemplo:* ${usedPrefix + command} https://open.spotify.com/track/0jH15Y9z2EpwTWRQI11xbj`);
-
-let api = await (await fetch(`https://archive-ui.tanakadomp.biz.id/download/spotify?url=${args[0]}`)).json();
-
-let force = api.result.data;
-let imagen = force.image;
-
-let moon = `\`𝚂𝙿𝙾𝚃𝙸𝙵𝚈 𝑋 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰\`.\n\n`
-moon += `☪︎ *Título:* ${force.title}\n`
-moon += `☪︎ *Artista:* ${force.artis}\n`
-moon += `☪︎ *Duración:* ${force.durasi}\n`
-moon += `───── ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ─────`;
-
-conn.sendFile(m.chat, imagen, 'MoonForce.jpg', moon, m, null);
-
-conn.sendMessage(m.chat, { audio: { url: force.download }, mimetype: 'audio/mpeg' }, { quoted: m });
+if (!searchData.status || !searchData.result || searchData.result.length === 0) {
+return m.reply(`🌙 No se encontraron resultados para su búsqueda.`)
 }
 
-MF.command = ['spotifydl', 'spdl'];
+let trackUrl = searchData.result[0].url
 
-export default MF;
+let downloadResponse = await fetch(`https://sylphy.xyz/download/spotify?url=${encodeURIComponent(trackUrl)}&api_key=sylphy-6f150d`)
+let downloadData = await downloadResponse.json()
+
+if (!downloadData.status) {
+return m.reply(`🌙 Error al obtener el archivo de descarga.`)
+}
+
+let result = downloadData.result
+let imagen = result.album.images[0].url
+let artistas = result.artists.map(a => a.name).join(', ')
+
+let info = `\`𝚂𝙿𝙾𝚃𝙸𝙵𝚈 𝑋 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰\`.\n\n`
+info += `☪︎ *Título:* ${result.name}\n`
+info += `☪︎ *Artista:* ${artistas}\n`
+info += `☪︎ *ID:* ${result.id}\n`
+info += `───── ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ─────`
+
+await conn.sendFile(m.chat, imagen, 'spotify.jpg', info, m)
+
+await conn.sendMessage(m.chat, { 
+audio: { url: result.download_url }, 
+mimetype: 'audio/mpeg',
+fileName: `${result.name}.mp3`
+}, { quoted: m })
+
+} catch (e) {
+console.error(e)
+m.reply(`🌙 Ocurrió un error inesperado al procesar el JSON.`)
+}
+}
+
+handler.command = ['spotifydl', 'spdl', 'spotify']
+
+export default handler
