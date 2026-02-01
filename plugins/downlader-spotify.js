@@ -1,104 +1,74 @@
-import axios from 'axios';
-import { writeFileSync, readFileSync, existsSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import fetch from 'node-fetch';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const CONTADOR_PATH = join(__dirname, '.contador_spotify.txt');
+let MF = async (m, { conn, args, command, usedPrefix }) => {
 
-/**
- * Registra la cantidad de descargas realizadas
- */
-function contarDescarga() {
-  let contador = 0;
-  if (existsSync(CONTADOR_PATH)) {
+    if (!args[0]) return m.reply(`🌙 *¿QUÉ DESEAS BUSCAR?*\n\n> Ingrese el nombre de una canción o un link de Spotify.\n> *Ejemplo:* ${usedPrefix + command} Twice - I Can't Stop Me`);
+
     try {
-      contador = parseInt(readFileSync(CONTADOR_PATH, 'utf8')) || 0;
+        await m.react('🔍');
+        let text = args.join(" ");
+        let spotifyUrl = text;
+
+        // --- 1. LÓGICA DE DETECCIÓN (Link vs Búsqueda) ---
+        const isUrl = /^(https?:\/\/)?(open\.)?spotify\.com\/(track|album|playlist)\/.+/i.test(text);
+
+        if (!isUrl) {
+            // Si es texto, usamos la API de búsqueda
+            let searchRes = await fetch(`https://api.delirius.store/search/spotify?q=${encodeURIComponent(text)}&limit=1`);
+            let searchData = await searchRes.json();
+
+            if (!searchData.status || searchData.data.length === 0) {
+                return m.reply('❌ No se encontraron resultados para tu búsqueda.');
+            }
+            spotifyUrl = searchData.data[0].url; // Tomamos el link del primer resultado
+        }
+
+        // --- 2. LÓGICA DE DESCARGA ---
+        await m.react('📥');
+        let downloadRes = await fetch(`https://api.delirius.store/download/spotifydl?url=${encodeURIComponent(spotifyUrl)}`);
+        let res = await downloadRes.json();
+
+        if (!res.status) return m.reply('❌ Error al procesar la descarga de Spotify.');
+
+        let force = res.data; 
+        
+        // Estética del mensaje
+        let moon = `\`𝚂𝙿𝙾𝚃𝙸𝙵𝚈 𝑋 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰\`\n\n`;
+        moon += `☪︎ *Título:* ${force.title}\n`;
+        moon += `☪︎ *Artista:* ${force.author}\n`;
+        moon += `☪︎ *Link:* ${spotifyUrl}\n`;
+        moon += `───── ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ─────`;
+
+        // Enviamos la portada con la info
+        await conn.sendFile(m.chat, force.image, 'cover.jpg', moon, m);
+
+        // Enviamos el audio con metadatos para el reproductor
+        await conn.sendMessage(m.chat, { 
+            audio: { url: force.download }, 
+            mimetype: 'audio/mpeg',
+            contextInfo: {
+                externalAdReply: {
+                    title: force.title,
+                    body: force.author,
+                    thumbnailUrl: force.image,
+                    sourceUrl: spotifyUrl,
+                    mediaType: 1,
+                    showAdAttribution: true
+                }
+            }
+        }, { quoted: m });
+
+        await m.react('✅');
+
     } catch (e) {
-      console.error('Error al leer contador:', e);
+        console.error(e);
+        await m.react('❌');
+        m.reply(`✨ *Ups:* No se pudo completar la solicitud. Inténtalo de nuevo más tarde.`);
     }
-  }
-  contador += 1;
-  writeFileSync(CONTADOR_PATH, String(contador));
-  return contador;
 }
 
-/**
- * Valida si el texto es un link de Spotify
- */
-const isSpotifyURL = (url) => /^(https?:\/\/)?(open\.)?spotify\.com\/(track|album|playlist)\/.+/i.test(url);
+MF.command = ['spotify', 'sp', 'spotifydl'];
+MF.help = ['spotify <nombre/link>'];
+MF.tags = ['descargas'];
 
-const handler = async (m, { conn, args, usedPrefix, command }) => {
-  if (!args[0]) {
-    return m.reply(`👟 *[ 𝖁𝖆𝖓𝖘 𝕭𝖔𝖙 ]* 👟\n\nUso correcto:\n> *${usedPrefix}${command}* <nombre de la canción o link>`);
-  }
-
-  try {
-    const query = args.join(" ");
-    await m.react('🎧');
-
-    let spotifyUrl = query;
-
-    // 1. Búsqueda: Si no es URL, buscamos el link primero
-    if (!isSpotifyURL(query)) {
-      const searchRes = await axios.get(`https://api.delirius.store/search/spotify?q=${encodeURIComponent(query)}&limit=1`);
-      if (!searchRes.data.status || searchRes.data.data.length === 0) {
-        return m.reply('❌ No encontré resultados para esa canción.');
-      }
-      spotifyUrl = searchRes.data.data[0].url;
-    }
-
-    await m.react('📥');
-    
-    // 2. Descarga: Obtenemos el link del MP3 y la info detallada
-    const downloadRes = await axios.get(`https://api.delirius.store/download/spotifydl?url=${encodeURIComponent(spotifyUrl)}`);
-    
-    if (!downloadRes.data.status) {
-      return m.reply('❌ Error al obtener el archivo de audio.');
-    }
-
-    const { title, author, image, download } = downloadRes.data.data;
-
-    // 3. Envío: Mandamos el audio con la carátula y metadatos
-    await m.react('📤');
-
-    // Obtenemos la imagen como buffer para la miniatura
-    let albumArt;
-    try {
-      const imgRes = await axios.get(image, { responseType: 'arraybuffer' });
-      albumArt = Buffer.from(imgRes.data, 'binary');
-    } catch {
-      albumArt = Buffer.alloc(0); // Si falla, se envía sin miniatura personalizada
-    }
-
-    await conn.sendMessage(m.chat, {
-      audio: { url: download },
-      mimetype: 'audio/mpeg',
-      ptt: false,
-      contextInfo: {
-        externalAdReply: {
-          title: `🎵 ${title}`,
-          body: `Artista: ${author || 'Spotify Artist'}`,
-          previewType: 'PHOTO',
-          thumbnail: albumArt,
-          sourceUrl: spotifyUrl
-        }
-      }
-    }, { quoted: m });
-
-    contarDescarga();
-    await m.react('✅');
-
-  } catch (error) {
-    console.error(error);
-    await m.react('❌');
-    m.reply(`⚠️ *Error:* Hubo un problema al procesar tu solicitud.`);
-  }
-};
-
-handler.help = ['spotify <búsqueda/url>'];
-handler.tags = ['descargas'];
-handler.command = /^(spotify|sp)$/i;
-
-export default handler;
+export default MF;
