@@ -1,73 +1,51 @@
-import fetch from 'node-fetch';
+import fetch from 'node-fetch'
 
 const handler = async (m, { conn, args, command, usedPrefix }) => {
 
-    if (!args[0]) return m.reply(`🌙 *¿QUÉ DESEAS BUSCAR?*\n\n> Ingrese el nombre de una canción o un link de Spotify.\n> *Ejemplo:* ${usedPrefix + command} Twice I Can't Stop Me`);
+if (!args[0]) return m.reply(`🌙 INGRESE UN ENLACE O NOMBRE DE SPOTIFY\n> *Ejemplo:* ${usedPrefix + command} Lupita`)
 
-    try {
-        await m.react('🔍');
-        let text = args.join(" ");
-        let spotifyUrl = text;
+try {
+let query = args.join(" ")
+let searchResponse = await fetch(`https://sylphy.xyz/search/spotify?q=${encodeURIComponent(query)}&api_key=sylphy-6f150d`)
+let searchData = await searchResponse.json()
 
-        // --- 1. DETECCIÓN DE LINK O BÚSQUEDA ---
-        const isUrl = /^(https?:\/\/)?(open\.)?spotify\.com\/(track|album|playlist)\/.+/i.test(text);
-
-        if (!isUrl) {
-            // Búsqueda en la API
-            let searchRes = await fetch(`https://api.delirius.store/search/spotify?q=${encodeURIComponent(text)}&limit=1`);
-            let searchData = await searchRes.json();
-
-            if (!searchData.status || !searchData.data || searchData.data.length === 0) {
-                return m.reply('❌ No se encontraron resultados para tu búsqueda.');
-            }
-            spotifyUrl = searchData.data[0].url;
-        }
-
-        // --- 2. DESCARGA DEL AUDIO ---
-        await m.react('📥');
-        let downloadRes = await fetch(`https://api.delirius.store/download/spotifydl?url=${encodeURIComponent(spotifyUrl)}`);
-        let res = await downloadRes.json();
-
-        if (!res.status) return m.reply('❌ Error al procesar la descarga de Spotify.');
-
-        let force = res.data; 
-        
-        let moon = `\`𝚂𝙿𝙾𝚃𝙸𝙵𝚈 𝑋 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰\`\n\n`;
-        moon += `☪︎ *Título:* ${force.title}\n`;
-        moon += `☪︎ *Artista:* ${force.author}\n`;
-        moon += `☪︎ *Link:* ${spotifyUrl}\n`;
-        moon += `───── ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ─────`;
-
-        // Envío de imagen
-        await conn.sendFile(m.chat, force.image, 'cover.jpg', moon, m);
-
-        // Envío de audio
-        await conn.sendMessage(m.chat, { 
-            audio: { url: force.download }, 
-            mimetype: 'audio/mpeg',
-            contextInfo: {
-                externalAdReply: {
-                    title: force.title,
-                    body: force.author,
-                    thumbnailUrl: force.image,
-                    sourceUrl: spotifyUrl,
-                    mediaType: 1,
-                    showAdAttribution: true
-                }
-            }
-        }, { quoted: m });
-
-        await m.react('✅');
-
-    } catch (e) {
-        console.error(e);
-        await m.react('❌');
-        m.reply(`✨ *Error:* No se pudo completar la solicitud.`);
-    }
+if (!searchData.status || !searchData.result || searchData.result.length === 0) {
+return m.reply(`🌙 No se encontraron resultados para su búsqueda.`)
 }
 
-handler.help = ['spotify <nombre/link>'];
-handler.tags = ['descargas'];
-handler.command = ['spotify', 'sp', 'spotifydl', 'spdl'];
+let trackUrl = searchData.result[0].url
 
-export default handler;
+let downloadResponse = await fetch(`https://sylphy.xyz/download/spotify?url=${encodeURIComponent(trackUrl)}&api_key=sylphy-6f150d`)
+let downloadData = await downloadResponse.json()
+
+if (!downloadData.status) {
+return m.reply(`🌙 Error al obtener el archivo de descarga.`)
+}
+
+let result = downloadData.result
+let imagen = result.album.images[0].url
+let artistas = result.artists.map(a => a.name).join(', ')
+
+let info = `\`𝚂𝙿𝙾𝚃𝙸𝙵𝚈 𝑋 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰\`.\n\n`
+info += `☪︎ *Título:* ${result.name}\n`
+info += `☪︎ *Artista:* ${artistas}\n`
+info += `☪︎ *ID:* ${result.id}\n`
+info += `───── ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ─────`
+
+await conn.sendFile(m.chat, imagen, 'spotify.jpg', info, m)
+
+await conn.sendMessage(m.chat, { 
+audio: { url: result.download_url }, 
+mimetype: 'audio/mpeg',
+fileName: `${result.name}.mp3`
+}, { quoted: m })
+
+} catch (e) {
+console.error(e)
+m.reply(`🌙 Ocurrió un error inesperado al procesar el JSON.`)
+}
+}
+
+handler.command = ['spotifydl', 'spdl', 'spotify']
+
+export default handler
