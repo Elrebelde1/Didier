@@ -19,27 +19,36 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
         const thumb = (await conn.getFile(thumbnail)).data
         await conn.sendMessage(m.chat, { image: thumb, caption: info }, { quoted: m })
 
-        const isAudio = ['play', 'yta', 'ytmp3', 'playaudio'].includes(command)
-        const endpoint = isAudio ? 'ytaudio' : 'ytvideo'
-
-        const res = await fetch(`https://api-adonix.ultraplus.click/download/${endpoint}?apikey=AdonixKeyvr85v01953&url=${encodeURIComponent(url)}`)
-        const json = await res.json()
-
-        if (!json.status || !json.data?.url) throw '⚠ No se pudo obtener el archivo del servidor Adonix.'
-
+        // LÓGICA DE DELIRIUS (Primero MP3, luego MP4)
+        const isAudio = /play|yta|ytmp3|playaudio/i.test(command)
+        
         if (isAudio) {
+            // API DELIRIUS MP3 V2
+            const res = await fetch(`https://api.delirius.store/download/ytmp3v2?url=${encodeURIComponent(url)}`)
+            const json = await res.json()
+
+            if (!json.success || !json.data?.download) throw '⚠ No se pudo obtener el audio de Delirius.'
+
             await conn.sendMessage(m.chat, { 
-                audio: { url: json.data.url }, 
+                audio: { url: json.data.download }, 
                 fileName: `${title}.mp3`, 
                 mimetype: 'audio/mpeg' 
             }, { quoted: m })
+
         } else {
-            await conn.sendFile(m.chat, json.data.url, `${title}.mp4`, `> ❀ ${title}`, m)
+            // API DELIRIUS MP4
+            const res = await fetch(`https://api.delirius.store/download/ytmp4?url=${encodeURIComponent(url)}`)
+            const json = await res.json()
+
+            if (!json.status || !json.data?.download) throw '⚠ No se pudo obtener el video de Delirius.'
+
+            await conn.sendFile(m.chat, json.data.download, `${title}.mp4`, `> ❀ ${title}`, m)
         }
 
         await m.react('✔️')
 
     } catch (e) {
+        console.error(e)
         await m.react('✖️')
         return conn.reply(m.chat, `⚠︎ Error: ${e}`, m)
     }
